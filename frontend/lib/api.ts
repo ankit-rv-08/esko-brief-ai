@@ -1,12 +1,24 @@
 import type { PipelineResponse } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
+export { API_URL };
 
 export class ApiError extends Error {
   constructor(message: string, public status: number, public detail?: string) {
     super(message);
     this.name = 'ApiError';
   }
+}
+
+export async function transcribeVoice(audio: Blob): Promise<string> {
+  const form = new FormData();
+  form.append('audio', audio, 'voice.webm');
+  const response = await fetch(`${API_URL}/voice/transcribe`, { method: 'POST', body: form });
+  if (!response.ok) {
+    const detail = (await response.json().catch(() => null))?.detail;
+    throw new ApiError(`Voice transcription failed (${response.status})`, response.status, detail);
+  }
+  return ((await response.json()) as { text: string }).text;
 }
 
 export async function runPipeline(

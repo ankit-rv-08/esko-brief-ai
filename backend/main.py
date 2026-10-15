@@ -43,6 +43,30 @@ def health() -> dict[str, str]:
     return {"status": "ok", "service": "esko-brief-ai"}
 
 
+@app.post("/voice/transcribe")
+async def transcribe_voice(audio: UploadFile = File(...)) -> dict[str, str]:
+    """Transcribe a browser-recorded audio clip with Groq Whisper."""
+    key = os.environ.get("GROQ_API_KEY")
+    if not key:
+        raise HTTPException(status_code=500, detail="GROQ_API_KEY not configured")
+    audio_bytes = await audio.read()
+    if not audio_bytes:
+        raise HTTPException(status_code=400, detail="Audio upload is empty")
+    try:
+        from groq import Groq
+
+        result = Groq(api_key=key).audio.transcriptions.create(
+            file=(audio.filename or "voice.webm", audio_bytes),
+            model="whisper-large-v3-turbo",
+            language="en",
+            response_format="text",
+        )
+    except Exception as exc:
+        logger.exception("Voice transcription failed")
+        raise HTTPException(status_code=502, detail="Voice transcription failed") from exc
+    return {"text": str(result).strip()}
+
+
 @app.post("/ingest", response_model=IngestResponse)
 async def ingest(files: list[UploadFile] = File(...)) -> IngestResponse:
     """Accept uploaded files and return their extracted source elements."""
