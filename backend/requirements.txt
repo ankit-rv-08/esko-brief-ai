@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pymupdf
+python-docx
+openpyxl
+pillow
+langchain-groq
+groq
+pydantic
+python-dotenv
