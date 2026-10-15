@@ -1,0 +1,21 @@
+.env
+.env.local
+.env.*.local
+venv/
+backend/venv/
+__pycache__/
+*.pyc
+data/samples/*.pdf
+data/samples/*.docx
+data/samples/*.xlsx
+!data/samples/.gitkeep
+results/*.json
+results/*.pdf
+
+# Next.js
+frontend/.next/
+frontend/node_modules/
+frontend/out/
+
+# OS
+.DS_Store
