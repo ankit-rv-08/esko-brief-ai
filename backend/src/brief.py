@@ -46,6 +46,15 @@ class _LLMBriefOutput(BaseModel):
     uncertainty: list[str] = Field(default_factory=list)
     open_questions: list[str] = Field(default_factory=list)
 
+    @field_validator("uncertainty", "open_questions", mode="before")
+    @classmethod
+    def _coerce_to_list(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, str):
+            return [v]
+        return v
+
 
 def generate_brief(
     *,
