@@ -8,6 +8,7 @@ __pycache__/
 data/samples/*.pdf
 data/samples/*.docx
 data/samples/*.xlsx
+data/samples/_rendered/
 !data/samples/.gitkeep
 results/*.json
 results/*.pdf
