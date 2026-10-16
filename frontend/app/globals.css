@@ -119,7 +119,7 @@ button:disabled {
   overflow: auto;
   border-right: 1px solid var(--border);
   background: rgba(255,255,255,.55);
-
+}
 
 /* Animations */
 @keyframes fadeUp {
@@ -537,6 +537,3 @@ button:disabled {
 .empty-mark { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; color: var(--tertiary); margin-bottom: 16px; }
 .empty-evidence { min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
 .empty-evidence .empty-mark { width: 48px; height: 48px; }
-
-
-}
