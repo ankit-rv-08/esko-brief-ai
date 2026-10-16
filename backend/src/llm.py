@@ -63,8 +63,25 @@ class GroqClient:
                 last_error = exc
                 logger.warning("Groq JSON attempt %d/%d failed: %s", attempt, max_retries, exc)
                 if attempt < max_retries:
-                    time.sleep(2 ** (attempt - 1))
+                    retry_after = self._get_retry_after(str(exc))
+                    logger.warning(f"Rate limited, waiting {retry_after}s before retry")
+                    time.sleep(retry_after)
         raise LLMError(f"generate_json failed after {max_retries} attempts: {last_error}")
+
+    @staticmethod
+    def _get_retry_after(error_msg: str) -> int:
+        """Extract a retry-after delay from Groq rate-limit errors.
+
+        Groq returns "Please try again in 55m0.048s". Cap at 5 minutes.
+        """
+        import re
+
+        match = re.search(r'in (\d+)m(\d+\.?\d*)s', error_msg)
+        if match:
+            minutes = int(match.group(1))
+            seconds = float(match.group(2))
+            return min(int(minutes * 60 + seconds), 300)
+        return 30  # default
 
     def describe(self, *, image_path: str, system: str, user: str) -> str:
         """Describe a local image with the configured vision model."""
