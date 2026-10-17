@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
 
 type FType = "xlsx" | "pdf";
 type Cite = { id: string; file: string; type: FType; loc: string; line: string; snippet: string };
-type SrcFile = { name: string; type: FType; meta: string };
+type SrcFile = { name: string; type: FType; meta: string; file?: File };
 
 const cites = [
   { id: "c1", file: "production_specs.xlsx", type: "xlsx", loc: "p.2", line: "Row 3", snippet: "ECO-01 bar soap, 100g. Carton target: 100% recyclable, max unit cost $0.18, launch Q2 retail." },
@@ -168,6 +168,7 @@ function Index() {
       name: f.name,
       type: /\.(xlsx|xls|csv)$/i.test(f.name) ? "xlsx" : "pdf",
       meta: `${Math.max(1, Math.round(f.size / 1024))} KB`,
+      file: f,
     })));
   };
 
@@ -176,7 +177,16 @@ function Index() {
     setPhase("running"); setBtn("running"); setStage(0); setActivity([]); setSel(null); setMobilePanel("brief"); setEvidenceOpen(false);
     setThinking(true); setThinkingText(`Connecting to server and gathering evidence…`);
     try {
-      const data = await runPipeline(files as unknown as File[], (stage) => {
+      // Extract the raw File objects from state
+      const realFilesToUpload = files
+        .map((f) => f.file)
+        .filter((f): f is File => f instanceof File);
+
+      if (realFilesToUpload.length === 0) {
+        throw new Error("No valid files to upload. Please use 'Add files' to upload a real file.");
+      }
+
+      const data = await runPipeline(realFilesToUpload, (stage) => {
         setThinkingText(`Processing step ${stage}...`);
       });
 
@@ -341,7 +351,49 @@ function Index() {
                 {phase === "idle" && (
                   <div className="mt-8 flex justify-center gap-3">
                     <Button variant="plain" size="plain" onClick={() => fileInput.current?.click()} className="inline-flex h-8 items-center gap-2 rounded-md bg-primary px-4 text-[12px] text-primary-foreground hover:bg-primary/90"><Plus className="h-4 w-4" />Add files</Button>
-                    {files.length === 0 && <Button variant="plain" size="plain" onClick={() => addFiles(SAMPLE)} className="rounded-md px-3 py-1.5 text-sm text-primary hover:bg-primary/5">Use sample sources</Button>}
+                    {files.length === 0 && (
+                      <Button
+                        variant="plain"
+                        size="plain"
+                        onClick={async () => {
+                          try {
+                            const res1 = await fetch("/content_sheet.xlsx");
+                            const blob1 = await res1.blob();
+                            const file1 = new File([blob1], "content_sheet.xlsx", {
+                              type:
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            });
+
+                            const res2 = await fetch("/carton.pdf");
+                            const blob2 = await res2.blob();
+                            const file2 = new File([blob2], "carton.pdf", {
+                              type: "application/pdf",
+                            });
+
+                            addFiles([
+                              {
+                                name: file1.name,
+                                type: "xlsx",
+                                meta: `${Math.round(file1.size / 1024)} KB`,
+                                file: file1,
+                              },
+                              {
+                                name: file2.name,
+                                type: "pdf",
+                                meta: `${Math.round(file2.size / 1024)} KB`,
+                                file: file2,
+                              },
+                            ]);
+                            toast("ok", "Sample sources loaded");
+                          } catch (err) {
+                            toast("err", "Failed to load sample files");
+                          }
+                        }}
+                        className="rounded-md px-3 py-1.5 text-sm text-primary hover:bg-primary/5"
+                      >
+                        Use sample sources
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>

@@ -20,3 +20,4 @@ frontend/out/
 
 # OS
 .DS_Storefrontend/components/AgentWindow.tsx
+.DS_Store
