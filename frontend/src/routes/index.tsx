@@ -187,7 +187,8 @@ function Index() {
       }
 
       const data = await runPipeline(realFilesToUpload, (stage) => {
-        setThinkingText(`Processing step ${stage}...`);
+        setActivity((a) => [...a, `Stage: ${stage}`]);
+        setThinkingText(`Working on: ${stage}...`);
       });
 
       // Set the real data to state
@@ -214,6 +215,8 @@ function Index() {
       setThinking(false); setPhase("done"); setBtn("default"); setBrief(null);
       say(`Hit a snag — ${isNetwork ? "network/CORS error" : errMsg}`);
       toast("err", isNetwork ? "Network/CORS: check backend URL" : "Failed: " + errMsg);
+    } finally {
+      setPhase("done");
     }
   };
 
@@ -348,6 +351,13 @@ function Index() {
                 <h1 className="mt-3 empty-title font-display text-[28px] font-normal leading-[1.1] md:text-[36px]">A clearer brief starts with better evidence.</h1>
                 <p className="mx-auto mt-4 max-w-[480px] text-[14px] leading-[1.65] text-secondary-foreground">Add your specs, brand guidelines and retailer requirements. Every line of the brief will point back to its source.</p>
                 <div className="mt-8"><Pipeline stage={stage} running={phase === "running"} /></div>
+                {phase === "running" && (
+                  <div className="mt-4 flex flex-col items-center gap-2 animate-pulse">
+                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                    <span className="font-mono text-xs text-muted-foreground">{thinkingText}</span>
+                    <span className="text-[11px] text-muted-foreground/60">This takes ~2 minutes, please wait</span>
+                  </div>
+                )}
                 {phase === "idle" && (
                   <div className="mt-8 flex justify-center gap-3">
                     <Button variant="plain" size="plain" onClick={() => fileInput.current?.click()} className="inline-flex h-8 items-center gap-2 rounded-md bg-primary px-4 text-[12px] text-primary-foreground hover:bg-primary/90"><Plus className="h-4 w-4" />Add files</Button>
