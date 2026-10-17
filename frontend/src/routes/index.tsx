@@ -197,11 +197,9 @@ function Index() {
       if (soundRef.current) ding();
     } catch (error) {
       console.error("Pipeline failed:", error);
-      setThinking(false); setPhase("done"); setBtn("default");
+      setThinking(false); setPhase("done"); setBtn("default"); setBrief(null);
       say(`Hit a snag — ${error instanceof Error ? error.message : "unknown error"}`);
       toast("err", "Failed to generate brief");
-    } finally {
-      setPhase("done");
     }
   };
 
