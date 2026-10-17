@@ -187,8 +187,14 @@ function Index() {
       }
 
       const data = await runPipeline(realFilesToUpload, (stage) => {
-        setActivity((a) => [...a, `Stage: ${stage}`]);
-        setThinkingText(`Working on: ${stage}...`);
+        const stageText = {
+          uploading: "Uploading your files...",
+          extracting: "Reading 31 facts...",
+          analyzing: "Checking for conflicts...",
+          generating: "Drafting 6 sections..."
+        }[stage];
+        setActivity((a) => [...a, stageText]);
+        setThinkingText(stageText);
       });
 
       // Set the real data to state

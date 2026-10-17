@@ -40,6 +40,10 @@ Design Direction, and Open Questions for Agency.
 Use 2-5 sentences per section, cite only supplied fact IDs, and mark unsupported
 sections as "Not determined from sources." Also return genuine uncertainty and
 agency questions.
+CRITICAL INSTRUCTIONS:
+1. DO NOT include raw fact IDs (like [abc123]) in the "content" field. The content should be clean prose.
+2. ONLY put the fact IDs in the "fact_ids" array.
+3. If you cite a fact, it MUST be in the fact_ids array, not in the text.
 """
 
 BRIEF_GENERATION_USER_TEMPLATE = """Extracted facts:
