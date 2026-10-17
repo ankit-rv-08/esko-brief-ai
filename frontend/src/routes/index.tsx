@@ -197,9 +197,13 @@ function Index() {
       if (soundRef.current) ding();
     } catch (error) {
       console.error("Pipeline failed:", error);
+      const errMsg = error instanceof Error ? error.message : String(error);
+      const isNetwork = errMsg.toLowerCase().includes("failed to fetch")
+        || errMsg.toLowerCase().includes("cors")
+        || errMsg.toLowerCase().includes("network");
       setThinking(false); setPhase("done"); setBtn("default"); setBrief(null);
-      say(`Hit a snag — ${error instanceof Error ? error.message : "unknown error"}`);
-      toast("err", "Failed to generate brief");
+      say(`Hit a snag — ${isNetwork ? "network/CORS error" : errMsg}`);
+      toast("err", isNetwork ? "Network/CORS: check backend URL" : "Failed: " + errMsg);
     }
   };
 
