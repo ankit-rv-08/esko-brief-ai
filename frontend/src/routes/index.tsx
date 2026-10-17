@@ -432,6 +432,11 @@ function Index() {
                           <div className="flex items-start justify-between gap-4">
                             <h2 className="text-[15px] font-semibold leading-[1.15]"><span className="mr-2 font-mono text-[13px] text-primary">{sectionIndex + 1}.</span>{section.title}</h2>
                             <Pill v={confidence} />
+                            {section.needs_human_review && (
+                              <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-medium text-warning">
+                                <AlertTriangle className="h-3 w-3" /> Needs review
+                              </span>
+                            )}
                           </div>
                           <p className="mt-3 text-[14px] leading-[1.65] text-secondary-foreground">{section.content}</p>
                           <div className="mt-4 flex flex-wrap gap-2">
@@ -451,6 +456,11 @@ function Index() {
                         <h3 className="text-sm font-semibold">Uncertainty</h3>
                         <ul className="mt-2 list-disc space-y-1 pl-4 text-[13px] text-foreground/80">
                           {brief.uncertainty.map((item, i) => <li key={i}>{item}</li>)}
+                          {(brief as any).critique?.map((c: any, i: number) => (
+                            <li key={`critique-${i}`} className="text-warning">
+                              [AI self-check] {c.issue} (in {c.section})
+                            </li>
+                          ))}
                         </ul>
                       </div>
                       <div className="rounded-xl border border-border bg-card p-5">

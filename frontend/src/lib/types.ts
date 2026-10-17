@@ -43,6 +43,9 @@ export interface BriefSection {
   fact_ids: string[];
   confidence: Confidence;
   confidence_reason: string | null;
+  // NEW: Formal uncertainty scoring — review axis
+  needs_human_review: boolean;
+  review_reason: string | null;
 }
 
 export interface Brief {
@@ -51,6 +54,8 @@ export interface Brief {
   sections: BriefSection[];
   uncertainty: string[];
   open_questions: string[];
+  // NEW: Agentic self-critique findings
+  critique: Array<{ section: string; issue: string; severity: string }>;
   generated_at: string;
   source_elements: SourceElement[];
   facts: Fact[];

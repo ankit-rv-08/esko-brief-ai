@@ -155,4 +155,6 @@ async def pipeline(files: list[UploadFile] = File(...)) -> dict[str, object]:
         "gaps": [gap.model_dump() for gap in analysis.gaps],
         "brief": generated_brief.model_dump(mode="json"),
         "warnings": warnings,
+        # NEW: Agentic self-critique results for UI display
+        "critique": generated_brief.critique,
     }

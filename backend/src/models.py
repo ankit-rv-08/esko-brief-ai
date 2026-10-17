@@ -99,6 +99,9 @@ class BriefSection(BaseModel):
     fact_ids: list[str] = Field(default_factory=list)
     confidence: Confidence = Confidence.MEDIUM
     confidence_reason: Optional[str] = None
+    # NEW: Formal uncertainty scoring — review axis
+    needs_human_review: bool = False
+    review_reason: Optional[str] = None
 
 
 class Brief(BaseModel):
@@ -107,6 +110,8 @@ class Brief(BaseModel):
     sections: list[BriefSection]
     uncertainty: list[str] = Field(default_factory=list)
     open_questions: list[str] = Field(default_factory=list)
+    # NEW: Agentic self-critique findings
+    critique: list[dict] = Field(default_factory=list)
     generated_at: datetime = Field(default_factory=datetime.utcnow)
     source_elements: list[SourceElement] = Field(default_factory=list)
     facts: list[Fact] = Field(default_factory=list)
