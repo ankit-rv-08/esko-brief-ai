@@ -16,7 +16,7 @@ from src.conflicts import analyze
 from src.facts import extract_facts
 from src.ingest import ingest_directory
 from src.llm import MultiProviderClient, LLMError
-from src.models import AnalyzeRequest, Brief, BriefRequest, ExtractRequest, ExtractResponse, IngestResponse
+from src.models import AnalyzeRequest, Brief, BriefRequest, ExtractRequest, ExtractResponse, IngestResponse, Fact, Conflict, SourceElement
 
 load_dotenv(Path(__file__).with_name(".env"))
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -160,21 +160,25 @@ async def pipeline(files: list[UploadFile] = File(...)) -> dict[str, object]:
         "critique": generated_brief.critique,
         "questions": questions_from_gaps(analysis.gaps)
     }
-from pydantic import BaseModel
-from typing import List
+
 
 class RegenerateRequest(BaseModel):
-    facts: List[dict]
-    conflicts: List[dict]
+    facts: list[Fact]
+    conflicts: list[Conflict] = []
+    source_elements: list[SourceElement] = []
+
 
 @app.post("/regenerate")
 def regenerate_brief(req: RegenerateRequest):
     client = _get_client()
-    new_brief = generate_brief(
-        facts=req.facts, 
-        conflicts=req.conflicts,
-        gaps=[],
-        source_elements=[],
-        client=client
-    )
+    try:
+        new_brief = generate_brief(
+            facts=req.facts, 
+            conflicts=req.conflicts,
+            gaps=[],
+            source_elements=req.source_elements,
+            client=client
+        )
+    except LLMError as exc:
+        raise HTTPException(status_code=502, detail=f"LLM failure: {exc}") from exc
     return {"brief": new_brief.model_dump(mode="json")}

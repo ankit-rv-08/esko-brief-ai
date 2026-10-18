@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 # Gemini Flash-Lite has 250K TPM, so 3000 chars per batch is safe.
 # Each 1000 chars ≈ 250-300 tokens. 3000 chars ≈ 750-900 tokens of source + ~4000 tokens of prompt.
 # Total ≈ 4750-4900 TPM per batch, well within the 250K TPM limit.
-MAX_BATCH_CHARS = 3000
+MAX_BATCH_CHARS = 10000
 
 # Cache: key = SHA256 of sorted element content, stored as JSON in /tmp/esko_cache/
 CACHE_DIR = Path("/tmp/esko_cache")

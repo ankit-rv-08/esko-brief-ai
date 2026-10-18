@@ -1,12 +1,11 @@
 """Shared validated models for the Esko Brief AI pipeline."""
 from __future__ import annotations
 
-from datetime import datetime
+import hashlib
 from enum import Enum
 from typing import Optional
-from uuid import uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class SourceType(str, Enum):
@@ -32,7 +31,7 @@ class Severity(str, Enum):
 class SourceElement(BaseModel):
     """One atomic, citeable unit extracted from an input file."""
 
-    id: str = Field(default_factory=lambda: uuid4().hex[:12])
+    id: str = ""
     source_file: str
     source_type: SourceType
     page: Optional[int] = None
@@ -40,6 +39,13 @@ class SourceElement(BaseModel):
     row: Optional[int] = None
     content: str
     image_path: Optional[str] = None
+
+    @model_validator(mode="after")
+    def compute_id(self) -> SourceElement:
+        if not self.id:
+            blob = f"{self.source_file}:{self.page}:{self.sheet}:{self.row}:{self.content}"
+            self.id = hashlib.sha1(blob.encode()).hexdigest()[:12]
+        return self
 
     def ref(self) -> str:
         """Return a human-readable source citation."""
@@ -53,13 +59,20 @@ class SourceElement(BaseModel):
 class Fact(BaseModel):
     """A structured claim supported by one or more source elements."""
 
-    id: str = Field(default_factory=lambda: uuid4().hex[:12])
+    id: str = ""
     name: str
     value: str
     sources: list[str] = Field(default_factory=list)
     confidence: float = Field(default=0.5, ge=0.0, le=1.0)
     reasoning: Optional[str] = None
     category: Optional[str] = None
+
+    @model_validator(mode="after")
+    def compute_id(self) -> Fact:
+        if not self.id:
+            blob = f"{self.name}:{self.value}:{sorted(self.sources)}"
+            self.id = hashlib.sha1(blob.encode()).hexdigest()[:12]
+        return self
 
 
 class FactExtractionResult(BaseModel):
@@ -105,18 +118,24 @@ class BriefSection(BaseModel):
 
 
 class Brief(BaseModel):
-    id: str = Field(default_factory=lambda: uuid4().hex[:12])
+    id: str = ""
     title: str
     sections: list[BriefSection]
     uncertainty: list[str] = Field(default_factory=list)
     open_questions: list[str] = Field(default_factory=list)
     # NEW: Agentic self-critique findings
     critique: list[dict] = Field(default_factory=list)
-    generated_at: datetime = Field(default_factory=datetime.utcnow)
     source_elements: list[SourceElement] = Field(default_factory=list)
     facts: list[Fact] = Field(default_factory=list)
     conflicts: list[Conflict] = Field(default_factory=list)
     gaps: list[Gap] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def compute_id(self) -> Brief:
+        if not self.id:
+            blob = f"{self.title}:" + "".join(s.title + s.content for s in self.sections)
+            self.id = hashlib.sha1(blob.encode()).hexdigest()[:12]
+        return self
 
 
 class ExtractRequest(BaseModel):
