@@ -6,7 +6,7 @@ import json
 import logging
 from pathlib import Path
 
-from src.llm import GroqClient
+from src.llm import MultiProviderClient
 from src.models import Fact, FactExtractionResult, SourceElement
 from src.prompts import (
     FACT_EXTRACTION_SYSTEM,
@@ -84,7 +84,7 @@ def _dedupe(facts: list[Fact]) -> list[Fact]:
     return list(unique.values())
 
 
-def extract_facts(elements: list[SourceElement], client: GroqClient) -> list[Fact]:
+def extract_facts(elements: list[SourceElement], client: MultiProviderClient) -> list[Fact]:
     """Extract facts in batches and discard facts citing unknown sources."""
     valid_ids = {element.id for element in elements}
     extracted: list[Fact] = []

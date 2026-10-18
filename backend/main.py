@@ -14,7 +14,7 @@ from src.brief import generate_brief
 from src.conflicts import analyze
 from src.facts import extract_facts
 from src.ingest import ingest_directory
-from src.llm import GroqClient, LLMError
+from src.llm import MultiProviderClient, LLMError
 from src.models import AnalyzeRequest, Brief, BriefRequest, ExtractRequest, ExtractResponse, IngestResponse
 
 load_dotenv(Path(__file__).with_name(".env"))
@@ -31,11 +31,14 @@ app.add_middleware(
 )
 
 
-def _get_client() -> GroqClient:
-    key = os.environ.get("GROQ_API_KEY")
-    if not key:
-        raise HTTPException(status_code=500, detail="GROQ_API_KEY not configured")
-    return GroqClient(api_key=key)
+def _get_client() -> MultiProviderClient:
+    gemini_key = os.environ.get("GEMINI_API_KEY")
+    mistral_key = os.environ.get("MISTRAL_API_KEY")
+    if not gemini_key:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY not configured")
+    if not mistral_key:
+        raise HTTPException(status_code=500, detail="MISTRAL_API_KEY not configured")
+    return MultiProviderClient(gemini_api_key=gemini_key, mistral_api_key=mistral_key)
 
 
 @app.get("/health")

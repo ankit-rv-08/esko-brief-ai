@@ -5,7 +5,7 @@ import logging
 
 from pydantic import BaseModel, Field, field_validator
 
-from src.llm import GroqClient
+from src.llm import MultiProviderClient
 from src.models import Brief, BriefSection, Confidence, Conflict, Fact, Gap, SourceElement
 from src.prompts import (
     BRIEF_GENERATION_SYSTEM,
@@ -59,13 +59,23 @@ class _LLMBriefOutput(BaseModel):
         return v
 
 
+class _CritiqueIssue(BaseModel):
+    section: str
+    issue: str
+    severity: str
+
+
+class _CritiqueOutput(BaseModel):
+    issues: list[_CritiqueIssue] = Field(default_factory=list)
+
+
 def generate_brief(
     *,
     facts: list[Fact],
     conflicts: list[Conflict],
     gaps: list[Gap],
     source_elements: list[SourceElement],
-    client: GroqClient,
+    client: MultiProviderClient,
 ) -> Brief:
     """Generate prose and strip any fact citations not present in `facts`.
 
@@ -106,13 +116,13 @@ Return JSON: {{"issues": [{{"section": "...", "issue": "...", "severity": "high|
     critique = client.generate_json(
         system="You are a strict fact-checker. Only flag claims not supported by the source facts.",
         user=critique_prompt,
-        schema=None,  # type: ignore[arg-type]
+        schema=_CritiqueOutput,
     )
 
-    logger.info("Self-critique found %d issues", len(critique.get("issues", [])))
+    logger.info("Self-critique found %d issues", len(critique.issues))
 
     # NEW: Refinement pass with critique in context
-    if critique.get("issues"):
+    if critique.issues:
         refine_prompt = f"""
 Revise this brief, addressing the fact-checker's issues.
 
@@ -121,6 +131,9 @@ ORIGINAL BRIEF:
 
 FACT-CHECKER FINDINGS:
 {critique}
+
+SOURCE FACTS:
+{format_facts_for_brief(facts)}
 
 RULES:
 - Remove any claim not supported by source facts
@@ -158,7 +171,7 @@ Return the revised brief in the same JSON structure.
         uncertainty=raw.uncertainty,
         open_questions=raw.open_questions,
         # NEW: Agentic self-critique findings
-        critique=critique.get("issues", []),
+        critique=[issue.model_dump() for issue in critique.issues],
         source_elements=source_elements,
         facts=facts,
         conflicts=conflicts,
