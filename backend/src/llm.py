@@ -92,6 +92,7 @@ class MultiProviderClient:
         max_tokens: int = 4096,
     ) -> T:
         key = self._cache_key(system, user, schema)
+        logger.info("llm key %s", key[:8])
         if USE_CACHE:
             cached = self._cache_get(key, schema)
             if cached is not None:
