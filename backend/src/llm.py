@@ -1,4 +1,4 @@
-"""Multi-provider LLM client with Gemini primary and Groq fallback."""
+"""Multi-provider LLM client with Gemini primary and no fallback (Groq removed)."""
 import os
 import time
 import logging
@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T", bound=BaseModel)
 
 GEMINI_MODEL = "gemini-3.5-flash-lite"
-GROQ_MODEL = "openai/gpt-oss-120b"
 FORCE_PROVIDER = os.getenv("FORCE_PROVIDER", "").lower()
 DEFAULT_TIMEOUT = 120.0
 
@@ -27,34 +26,20 @@ class MultiProviderClient:
         if not gemini_key:
             raise LLMError("GEMINI_API_KEY not set")
 
-        # Define both clients here, not at module level
         self.gemini_client = OpenAI(
             api_key=gemini_key,
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
         )
-        self.groq_client = OpenAI(
-            api_key=os.getenv("GROQ_API_KEY", ""),
-            base_url="https://api.groq.com/openai/v1",
-        )
 
     def generate_json(self, system: str, user: str, schema: type[T], model: str | None = None, max_retries: int = 3) -> T:
-        if FORCE_PROVIDER == "groq":
-            logger.info("FORCE_PROVIDER=groq — skipping Gemini")
-            return self._call_groq(system, user, schema, max_retries)
-
-        try:
-            return self._call_gemini(system, user, schema, model, max_retries)
-        except Exception as e:
-            logger.warning("Gemini failed: %s — falling back to Groq", e)
-
-        return self._call_groq(system, user, schema, max_retries)
+        return self._call_gemini(system, user, schema, model, max_retries)
 
     def _call_gemini(self, system: str, user: str, schema: type[T], model: str | None, max_retries: int) -> T:
         last_err = None
         for attempt in range(1, max_retries + 1):
             try:
                 started = time.perf_counter()
-                resp = self.gemini_client.chat.completions.create(   # <-- self.
+                resp = self.gemini_client.chat.completions.create(
                     model=model or GEMINI_MODEL,
                     messages=[
                         {"role": "system", "content": system},
@@ -74,32 +59,6 @@ class MultiProviderClient:
                 if attempt < max_retries:
                     time.sleep(15 * attempt)
         raise LLMError(f"Gemini generate_json failed after {max_retries} attempts: {last_err}")
-
-    def _call_groq(self, system: str, user: str, schema: type[T], max_retries: int) -> T:
-        last_err = None
-        for attempt in range(1, max_retries + 1):
-            try:
-                started = time.perf_counter()
-                resp = self.groq_client.chat.completions.create(   # <-- self.
-                    model=GROQ_MODEL,
-                    messages=[
-                        {"role": "system", "content": system},
-                        {"role": "user", "content": user},
-                    ],
-                    response_format={"type": "json_object"},
-                    timeout=60.0,
-                )
-                raw = resp.choices[0].message.content
-                elapsed = (time.perf_counter() - started) * 1000
-                logger.info("groq.generate_json model=%s attempt=%d elapsed_ms=%.0f",
-                            GROQ_MODEL, attempt, elapsed)
-                return schema.model_validate_json(raw)
-            except Exception as e:
-                last_err = e
-                logger.warning("Groq JSON attempt %d/%d failed: %s", attempt, max_retries, e)
-                if attempt < max_retries:
-                    time.sleep(10)
-        raise LLMError(f"Groq generate_json failed after {max_retries} attempts: {last_err}")
 
     def describe(self, *, image_path: str, system: str, user: str) -> str:
         """Describe a local image with the configured vision model."""
