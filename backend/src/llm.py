@@ -72,7 +72,7 @@ class MultiProviderClient:
         for attempt in range(1, max_retries + 1):
             try:
                 started = time.perf_counter()
-                resp = gemini_client.chat.completions.create(
+                resp = self.gemini_client.chat.completions.create(
                     model=model or GEMINI_MODEL,
                     messages=[
                         {"role": "system", "content": system},
