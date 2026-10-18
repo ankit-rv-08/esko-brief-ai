@@ -33,12 +33,9 @@ app.add_middleware(
 
 def _get_client() -> MultiProviderClient:
     gemini_key = os.environ.get("GEMINI_API_KEY")
-    mistral_key = os.environ.get("MISTRAL_API_KEY")
     if not gemini_key:
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY not configured")
-    if not mistral_key:
-        raise HTTPException(status_code=500, detail="MISTRAL_API_KEY not configured")
-    return MultiProviderClient(gemini_api_key=gemini_key, mistral_api_key=mistral_key)
+    return MultiProviderClient()
 
 
 @app.get("/health")

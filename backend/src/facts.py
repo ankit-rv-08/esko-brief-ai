@@ -16,11 +16,11 @@ from src.prompts import (
 
 logger = logging.getLogger(__name__)
 
-# Reduced from 8000 to 1500 to halve per-batch token usage.
-# Each 1000 chars of source content ≈ 250-300 tokens for GPT-OSS-120B.
-# 1500 chars ≈ 400-450 tokens of source + ~4000 tokens of prompt template.
-# Total ≈ 4400-4500 TPM, well within the 8000 TPM limit.
-MAX_BATCH_CHARS = 1500
+# Increased to 3000 to reduce batch count from 8 to 4.
+# Gemini Flash-Lite has 250K TPM, so 3000 chars per batch is safe.
+# Each 1000 chars ≈ 250-300 tokens. 3000 chars ≈ 750-900 tokens of source + ~4000 tokens of prompt.
+# Total ≈ 4750-4900 TPM per batch, well within the 250K TPM limit.
+MAX_BATCH_CHARS = 3000
 
 # Cache: key = SHA256 of sorted element content, stored as JSON in /tmp/esko_cache/
 CACHE_DIR = Path("/tmp/esko_cache")

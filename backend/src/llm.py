@@ -1,174 +1,139 @@
-"""Multi-provider LLM client with Gemini primary and Mistral fallback."""
-from __future__ import annotations
-
-import base64
-import logging
+"""Multi-provider LLM client with Gemini primary and Groq fallback."""
+import os
 import time
-from pathlib import Path
-from typing import Type, TypeVar
+import logging
+from typing import TypeVar
 
 from openai import OpenAI
-from mistralai.client import Mistral
-from mistralai.utils import BackoffStrategy, RetryConfig
 from pydantic import BaseModel, ValidationError
 
 logger = logging.getLogger(__name__)
+
 T = TypeVar("T", bound=BaseModel)
 
-# ============ Gemini Client ============
-gemini_client = OpenAI(
-    api_key="",
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-)
+# ============ Models ============
+GEMINI_MODEL = "gemini-3.5-flash-lite"   # 15 RPM, 500 RPD, 250K TPM
+GROQ_MODEL = "openai/gpt-oss-120b"        # 30 RPM, 8K TPM (only for short calls)
 
-# ============ Mistral Client ============
-mistral_client = Mistral(
-    api_key="",
-    retry_config=RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False),
-)
+FORCE_PROVIDER = os.getenv("FORCE_PROVIDER", "").lower()
 
-GEMINI_MODEL = "gemini-2.5-flash"
-MISTRAL_MODEL = "mistral-small-latest"
-VISION_MODEL = "gemini-2.5-flash"
-DEFAULT_TIMEOUT = 60.0
-DEFAULT_MAX_RETRIES = 3
+DEFAULT_TIMEOUT = 120.0
 
 
-class LLMError(RuntimeError):
-    """Raised when an LLM request cannot produce validated output."""
+class LLMError(Exception):
+    pass
 
 
 class MultiProviderClient:
-    """Provide validated JSON generation and image description with automatic failover."""
+    def __init__(self):
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
+        self.groq_api_key = os.getenv("GROQ_API_KEY", "")
+        if not self.gemini_api_key:
+            raise LLMError("GEMINI_API_KEY not set")
 
-    def __init__(self, gemini_api_key: str, mistral_api_key: str, *, timeout: float = DEFAULT_TIMEOUT) -> None:
         self.gemini_client = OpenAI(
-            api_key=gemini_api_key,
+            api_key=self.gemini_api_key,
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-            timeout=timeout,
         )
-        self.mistral_client = Mistral(
-            api_key=mistral_api_key,
-            retry_config=RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False),
-        )
+
+        if self.groq_api_key:
+            self.groq_client = OpenAI(
+                api_key=self.groq_api_key,
+                base_url="https://api.groq.com/openai/v1",
+            )
+        else:
+            self.groq_client = None
 
     def generate_json(
         self,
-        *,
         system: str,
         user: str,
-        schema: Type[T],
+        schema: type[T],
         model: str | None = None,
-        max_retries: int = DEFAULT_MAX_RETRIES,
+        max_retries: int = 3,
     ) -> T:
-        """Try Gemini first; on 429/timeout/413, automatically fall back to Mistral."""
-        # ---- Attempt 1: Gemini ----
+        if FORCE_PROVIDER == "groq":
+            logger.info("FORCE_PROVIDER=groq — skipping Gemini")
+            return self._call_groq(system, user, schema, max_retries)
+
+        # Attempt 1: Gemini
         try:
             return self._call_gemini(system, user, schema, model, max_retries)
         except Exception as e:
-            logger.warning("Gemini failed: %s — falling back to Mistral", e)
+            logger.warning("Gemini failed: %s — falling back to Groq", e)
 
-        # ---- Attempt 2: Mistral ----
-        try:
-            return self._call_mistral(system, user, schema, max_retries)
-        except Exception as e:
-            logger.error("Mistral also failed: %s", e)
-            raise LLMError(f"generate_json failed after trying both providers: {e}")
+        # Attempt 2: Groq
+        return self._call_groq(system, user, schema, max_retries)
 
     def _call_gemini(
-        self,
-        system: str,
-        user: str,
-        schema: Type[T],
-        model: str | None = None,
-        max_retries: int = DEFAULT_MAX_RETRIES,
+        self, system: str, user: str, schema: type[T], model: str | None, max_retries: int
     ) -> T:
-        """Call Gemini with retry logic."""
-        last_error: Exception | None = None
+        last_err = None
         for attempt in range(1, max_retries + 1):
-            started = time.perf_counter()
             try:
-                resp = self.gemini_client.chat.completions.create(
+                started = time.perf_counter()
+                resp = gemini_client.chat.completions.create(
                     model=model or GEMINI_MODEL,
                     messages=[
                         {"role": "system", "content": system},
                         {"role": "user", "content": user},
                     ],
                     response_format={"type": "json_object"},
-                    temperature=0.1,
-                    max_tokens=4096,
+                    timeout=DEFAULT_TIMEOUT,
                 )
-                raw = resp.choices[0].message.content or "{}"
-                result = schema.model_validate_json(raw)
-                logger.info(
-                    "gemini.generate_json model=%s attempt=%d elapsed_ms=%.0f",
-                    model or GEMINI_MODEL, attempt, (time.perf_counter() - started) * 1000,
-                )
-                return result
-            except (ValidationError, Exception) as exc:
-                last_error = exc
-                logger.warning("Gemini JSON attempt %d/%d failed: %s", attempt, max_retries, exc)
+                raw = resp.choices[0].message.content
+                elapsed = (time.perf_counter() - started) * 1000
+                logger.info("gemini.generate_json model=%s attempt=%d elapsed_ms=%.0f",
+                            model or GEMINI_MODEL, attempt, elapsed)
+                return schema.model_validate_json(raw)
+            except Exception as e:
+                last_err = e
+                logger.warning("Gemini JSON attempt %d/%d failed: %s", attempt, max_retries, e)
                 if attempt < max_retries:
-                    retry_after = self._get_retry_after(str(exc))
-                    logger.warning(f"Rate limited, waiting {retry_after}s before retry")
-                    time.sleep(retry_after)
-        raise LLMError(f"Gemini generate_json failed after {max_retries} attempts: {last_error}")
+                    wait = 15 * attempt  # 15s, 30s
+                    logger.warning("Waiting %ds before retry", wait)
+                    time.sleep(wait)
+        raise LLMError(f"Gemini generate_json failed after {max_retries} attempts: {last_err}")
 
-    def _call_mistral(
-        self,
-        system: str,
-        user: str,
-        schema: Type[T],
-        max_retries: int = DEFAULT_MAX_RETRIES,
+    def _call_groq(
+        self, system: str, user: str, schema: type[T], max_retries: int
     ) -> T:
-        """Call Mistral with retry logic."""
-        last_error: Exception | None = None
+        if not self.groq_client:
+            raise LLMError("Groq client not available (GROQ_API_KEY not set)")
+
+        last_err = None
         for attempt in range(1, max_retries + 1):
-            started = time.perf_counter()
             try:
-                resp = self.mistral_client.chat.complete(
-                    model=MISTRAL_MODEL,
+                started = time.perf_counter()
+                resp = self.groq_client.chat.completions.create(
+                    model=GROQ_MODEL,
                     messages=[
                         {"role": "system", "content": system},
                         {"role": "user", "content": user},
                     ],
                     response_format={"type": "json_object"},
-                    temperature=0.1,
-                    max_tokens=4096,
+                    timeout=60.0,
                 )
-                raw = resp.choices[0].message.content or "{}"
-                result = schema.model_validate_json(raw)
-                logger.info(
-                    "mistral.generate_json model=%s attempt=%d elapsed_ms=%.0f",
-                    MISTRAL_MODEL, attempt, (time.perf_counter() - started) * 1000,
-                )
-                return result
-            except (ValidationError, Exception) as exc:
-                last_error = exc
-                logger.warning("Mistral JSON attempt %d/%d failed: %s", attempt, max_retries, exc)
+                raw = resp.choices[0].message.content
+                elapsed = (time.perf_counter() - started) * 1000
+                logger.info("groq.generate_json model=%s attempt=%d elapsed_ms=%.0f",
+                            GROQ_MODEL, attempt, elapsed)
+                return schema.model_validate_json(raw)
+            except Exception as e:
+                last_err = e
+                logger.warning("Groq JSON attempt %d/%d failed: %s", attempt, max_retries, e)
                 if attempt < max_retries:
-                    retry_after = self._get_retry_after(str(exc))
-                    logger.warning(f"Rate limited, waiting {retry_after}s before retry")
-                    time.sleep(retry_after)
-        raise LLMError(f"Mistral generate_json failed after {max_retries} attempts: {last_error}")
-
-    @staticmethod
-    def _get_retry_after(error_msg: str) -> int:
-        """Extract a retry-after delay from rate-limit errors."""
-        import re
-
-        match = re.search(r'in (\d+)m(\d+\.?\d*)s', error_msg)
-        if match:
-            minutes = int(match.group(1))
-            seconds = float(match.group(2))
-            return min(int(minutes * 60 + seconds), 300)
-        return 30  # default
+                    time.sleep(10)
+        raise LLMError(f"Groq generate_json failed after {max_retries} attempts: {last_err}")
 
     def describe(self, *, image_path: str, system: str, user: str) -> str:
         """Describe a local image with the configured vision model."""
+        import base64
+        from pathlib import Path
+
         encoded = base64.b64encode(Path(image_path).read_bytes()).decode("ascii")
         response = self.gemini_client.chat.completions.create(
-            model=VISION_MODEL,
+            model=GEMINI_MODEL,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": [
@@ -186,12 +151,4 @@ class MultiProviderClient:
 
 def from_env() -> MultiProviderClient:
     """Create a client from the current process environment."""
-    import os
-
-    gemini_api_key = os.environ.get("GEMINI_API_KEY")
-    mistral_api_key = os.environ.get("MISTRAL_API_KEY")
-    if not gemini_api_key:
-        raise LLMError("GEMINI_API_KEY not set in environment")
-    if not mistral_api_key:
-        raise LLMError("MISTRAL_API_KEY not set in environment")
-    return MultiProviderClient(gemini_api_key=gemini_api_key, mistral_api_key=mistral_api_key)
+    return MultiProviderClient()
