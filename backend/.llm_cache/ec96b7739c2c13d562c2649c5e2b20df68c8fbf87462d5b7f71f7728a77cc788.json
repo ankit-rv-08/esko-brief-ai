@@ -1,0 +1,276 @@
+{
+  "facts": [
+    {
+      "name": "PackageSizeNetWeight",
+      "value": "480g",
+      "sources": ["6323b088e430"],
+      "confidence": 1.0,
+      "reasoning": "The content sheet explicitly lists the package size and net weight as 480g.",
+      "category": "Packaging"
+    },
+    {
+      "name": "ServingSizeInfo",
+      "value": "8 servings per container; gram amount not extracted",
+      "sources": ["50bfff868040"],
+      "confidence": 0.7,
+      "reasoning": "The source notes that the panel states \"8 servings per container\" but the gram/volume amount did not extract cleanly.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "PackageType",
+      "value": "Carton",
+      "sources": ["ce613f7addb5"],
+      "confidence": 1.0,
+      "reasoning": "The content sheet lists the package type as Carton.",
+      "category": "Packaging"
+    },
+    {
+      "name": "QuantitativeDeclarationJuiceVolume",
+      "value": "N/A",
+      "sources": ["471fd576a63c"],
+      "confidence": 1.0,
+      "reasoning": "The sheet explicitly marks the quantitative declaration of juice volume as N/A.",
+      "category": "Regulatory"
+    },
+    {
+      "name": "NutritionPanelName",
+      "value": "Nutrition Facts",
+      "sources": ["9a69daabf546"],
+      "confidence": 1.0,
+      "reasoning": "The sheet states the nutrition panel name is \"Nutrition Facts\".",
+      "category": "Labeling"
+    },
+    {
+      "name": "NutritionPanelBottomStatement",
+      "value": "The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "sources": ["4be62c529344"],
+      "confidence": 1.0,
+      "reasoning": "The bottom statement is directly quoted from the source.",
+      "category": "Labeling"
+    },
+    {
+      "name": "OtherLabelText",
+      "value": "Recyclable paperboard mark; \"Packaging powered by Esko\" logo",
+      "sources": ["6c4270476845"],
+      "confidence": 1.0,
+      "reasoning": "The source lists these additional textual elements on the label.",
+      "category": "Labeling"
+    },
+    {
+      "name": "PercentAlcoholByVolume",
+      "value": "N/A",
+      "sources": ["adc79df19d5a"],
+      "confidence": 1.0,
+      "reasoning": "The sheet explicitly records %ABV as N/A.",
+      "category": "Regulatory"
+    },
+    {
+      "name": "NutritionValuesHeader",
+      "value": "Nutrition Values (per serving, as printed)",
+      "sources": ["14f8953dffc2"],
+      "confidence": 1.0,
+      "reasoning": "The header appears in the sheet indicating the following values are per serving.",
+      "category": "Labeling"
+    },
+    {
+      "name": "NutrientCompositionReferenceWeights",
+      "value": "250g, 480g, 1000g",
+      "sources": ["81e0bacc6011"],
+      "confidence": 1.0,
+      "reasoning": "The row lists three reference weights used for the nutrient table.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "CaloriesPer250g",
+      "value": "166",
+      "sources": ["4c309c900f22"],
+      "confidence": 1.0,
+      "reasoning": "The calorie value for the 250g column is 166 as shown.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "CaloriesPer480g",
+      "value": "319",
+      "sources": ["4c309c900f22"],
+      "confidence": 1.0,
+      "reasoning": "The calorie value for the 480g column is 319 as shown.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "CaloriesPer1000g",
+      "value": "664",
+      "sources": ["4c309c900f22"],
+      "confidence": 1.0,
+      "reasoning": "The calorie value for the 1000g column is 664 as shown.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "TotalFatPer250g",
+      "value": "15g (2.2%*)",
+      "sources": ["dab0cf2e360f"],
+      "confidence": 1.0,
+      "reasoning": "Total fat for 250g is listed as 15g with 2.2% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "TotalFatPer480g",
+      "value": "28.8g (4.2%*)",
+      "sources": ["dab0cf2e360f"],
+      "confidence": 1.0,
+      "reasoning": "Total fat for 480g is listed as 28.8g with 4.2% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "TotalFatPer1000g",
+      "value": "60g (8.8%*)",
+      "sources": ["dab0cf2e360f"],
+      "confidence": 1.0,
+      "reasoning": "Total fat for 1000g is listed as 60g with 8.8% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "SaturatedFatPer250g",
+      "value": "5g (8%)",
+      "sources": ["0919db00168d"],
+      "confidence": 1.0,
+      "reasoning": "Saturated fat for 250g is 5g with 8% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "SaturatedFatPer480g",
+      "value": "9.6g (15.4%)",
+      "sources": ["0919db00168d"],
+      "confidence": 1.0,
+      "reasoning": "Saturated fat for 480g is 9.6g with 15.4% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "SaturatedFatPer1000g",
+      "value": "20g (32%)",
+      "sources": ["0919db00168d"],
+      "confidence": 1.0,
+      "reasoning": "Saturated fat for 1000g is 20g with 32% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "TransFatPer250g",
+      "value": "8g",
+      "sources": ["4686389a0804"],
+      "confidence": 1.0,
+      "reasoning": "Trans fat for 250g is listed as 8g.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "TransFatPer480g",
+      "value": "15.4g",
+      "sources": ["4686389a0804"],
+      "confidence": 1.0,
+      "reasoning": "Trans fat for 480g is listed as 15.4g.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "TransFatPer1000g",
+      "value": "32g",
+      "sources": ["4686389a0804"],
+      "confidence": 1.0,
+      "reasoning": "Trans fat for 1000g is listed as 32g.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "CholesterolPer250g",
+      "value": "45mg (26%*)",
+      "sources": ["91d69ac9a0ee"],
+      "confidence": 1.0,
+      "reasoning": "Cholesterol for 250g is 45mg with 26% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "CholesterolPer480g",
+      "value": "86.4mg (49.9%*)",
+      "sources": ["91d69ac9a0ee"],
+      "confidence": 1.0,
+      "reasoning": "Cholesterol for 480g is 86.4mg with 49.9% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "CholesterolPer1000g",
+      "value": "180mg (104%*)",
+      "sources": ["91d69ac9a0ee"],
+      "confidence": 1.0,
+      "reasoning": "Cholesterol for 1000g is 180mg with 104% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "SodiumPer250g",
+      "value": "25mg (12%*)",
+      "sources": ["cee91017f3d6"],
+      "confidence": 1.0,
+      "reasoning": "Sodium for 250g is 25mg with 12% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "SodiumPer480g",
+      "value": "48mg (23%*)",
+      "sources": ["cee91017f3d6"],
+      "confidence": 1.0,
+      "reasoning": "Sodium for 480g is 48mg with 23% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "SodiumPer1000g",
+      "value": "100mg (48%*)",
+      "sources": ["cee91017f3d6"],
+      "confidence": 1.0,
+      "reasoning": "Sodium for 1000g is 100mg with 48% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "TotalCarbohydratePer250g",
+      "value": "15g (18%)",
+      "sources": ["e1641135c938"],
+      "confidence": 1.0,
+      "reasoning": "Total carbohydrate for 250g is 15g with 18% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "TotalCarbohydratePer480g",
+      "value": "28.8g (34.6%)",
+      "sources": ["e1641135c938"],
+      "confidence": 1.0,
+      "reasoning": "Total carbohydrate for 480g is 28.8g with 34.6% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "TotalCarbohydratePer1000g",
+      "value": "60g (72%)",
+      "sources": ["e1641135c938"],
+      "confidence": 1.0,
+      "reasoning": "Total carbohydrate for 1000g is 60g with 72% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "DietaryFiberPer250g",
+      "value": "3g (5%)",
+      "sources": ["61934e9ed98e"],
+      "confidence": 1.0,
+      "reasoning": "Dietary fiber for 250g is 3g with 5% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "DietaryFiberPer480g",
+      "value": "5.8g (9.6%)",
+      "sources": ["61934e9ed98e"],
+      "confidence": 1.0,
+      "reasoning": "Dietary fiber for 480g is 5.8g with 9.6% DV.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "DietaryFiberPer1000g",
+      "value": "12g (20%)",
+      "sources": ["61934e9ed98e"],
+      "confidence": 1.0,
+      "reasoning": "Dietary fiber for 1000g is 12g with 20% DV.",
+      "category": "Nutrition"
+    }
+  ]
+}

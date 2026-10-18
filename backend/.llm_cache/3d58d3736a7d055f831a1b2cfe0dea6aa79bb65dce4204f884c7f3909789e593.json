@@ -1,0 +1,92 @@
+{
+  "facts": [
+    {
+      "name": "Language",
+      "value": "English",
+      "sources": ["9e04197dd6a6"],
+      "confidence": 0.99,
+      "reasoning": "The content sheet explicitly lists the language as English for the US market.",
+      "category": "Language"
+    },
+    {
+      "name": "Legal Name",
+      "value": "GRANOLA — BERRY CRUNCH",
+      "sources": ["d2a1a81e0182"],
+      "confidence": 0.99,
+      "reasoning": "Row 23 of the content sheet provides the legal product name.",
+      "category": "Product Identity"
+    },
+    {
+      "name": "Allergen Information",
+      "value": "ALLERGEN INFORMATION: May Contain Almonds, May Contain Brazil Nuts, May Contain Pecan Nuts, May Contain Walnuts or Cereals Containing Gluten, May Contain Nuts, Oats.",
+      "sources": ["e626b61f9b3b"],
+      "confidence": 0.98,
+      "reasoning": "The allergen box text is transcribed verbatim from the source; the note about potential labeling error does not change the stated advisory language.",
+      "category": "Allergen"
+    },
+    {
+      "name": "Storage Instructions",
+      "value": "Store in a cool, dry place. Once opened, keep packaging closed and eat within a month or by date shown, for best before, see base of pack.",
+      "sources": ["aa43a519fd66"],
+      "confidence": 0.99,
+      "reasoning": "Row 25 provides clear storage guidance.",
+      "category": "Storage"
+    },
+    {
+      "name": "Ingredient List",
+      "value": "INGREDIENTS: Organic Wholegrain Oat Flakes (79%), Almonds, Pecans, Sunflower Seeds, Vegetable Oils (in varying proportions), Dried Blueberries, Cranberries, Sunflower Seeds, Honey (9%), Coconut Sugar, Crystallized Ginger (cane sugar), Himalayan Pink Salt. Natural Flavoring.",
+      "sources": ["e6049689b104"],
+      "confidence": 0.97,
+      "reasoning": "The ingredient list is taken directly from the back‑panel copy; reconstruction of line breaks does not alter the wording.",
+      "category": "Ingredients"
+    },
+    {
+      "name": "Marketing Copy",
+      "value": "Start tapping, swishing & shaking your tail fins!",
+      "sources": ["45d24e4f3541"],
+      "confidence": 0.99,
+      "reasoning": "Row 27 contains the marketing tagline verbatim.",
+      "category": "Marketing"
+    },
+    {
+      "name": "Dietary Information",
+      "value": "Suitable for vegetarians. All products certified organic, GMO free, and suitable for vegetarians (vegan), with no artificial additives. Front panel also carries a separate \"Certified Vegan\" (vegan.org) mark.",
+      "sources": ["c8cb4e9a335f"],
+      "confidence": 0.98,
+      "reasoning": "Row 28 lists dietary claims and notes the vegan certification mark.",
+      "category": "Dietary"
+    },
+    {
+      "name": "Claims & Certifications",
+      "value": "USDA Organic; Certified Vegan (vegan.org); No Added Sugar; Oven Baked; GMO Free; How2Recycle / recyclable paperboard mark",
+      "sources": ["77bc78c83c89"],
+      "confidence": 0.98,
+      "reasoning": "Row 29 enumerates all front/back panel claims and certifications.",
+      "category": "Claims & Certifications"
+    },
+    {
+      "name": "Nutrition Panel Format",
+      "value": "US FDA Standard (Vertical)",
+      "sources": ["f9ce527c0130"],
+      "confidence": 0.99,
+      "reasoning": "Row 33 specifies the required nutrition panel layout.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "Number of Servings per Package",
+      "value": "8",
+      "sources": ["dc62ab98e234"],
+      "confidence": 0.99,
+      "reasoning": "Row 34 states the package contains eight servings.",
+      "category": "Nutrition"
+    },
+    {
+      "name": "Nutrition Information",
+      "value": "Data not provided in the source.",
+      "sources": ["2fe7992cb3a4"],
+      "confidence": 0.80,
+      "reasoning": "Row 31 indicates a nutrition information section exists, but no specific nutrient values are supplied in the provided excerpts.",
+      "category": "Nutrition"
+    }
+  ]
+}

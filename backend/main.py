@@ -11,6 +11,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.followups import questions_from_gaps
+from src.brief import generate_brief
 from src.conflicts import analyze
 from src.facts import extract_facts
 from src.ingest import ingest_directory

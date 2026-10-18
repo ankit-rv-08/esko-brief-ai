@@ -1,0 +1,260 @@
+{
+  "facts": [
+    {
+      "name": "product_name",
+      "value": "Berry Crunch Granola",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.97,
+      "reasoning": "The text repeats 'BERRY CRUNCH' and identifies the product as granola.",
+      "category": "product_identification"
+    },
+    {
+      "name": "net_weight",
+      "value": "480 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.96,
+      "reasoning": "The line '480g' appears next to the product name.",
+      "category": "package_quantity"
+    },
+    {
+      "name": "manufacturer",
+      "value": "Dancing Fish Granola Co.",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.96,
+      "reasoning": "The phrase 'GRANOLA PRODUCED BY DANCING FISH GRANOLA CO.' is present.",
+      "category": "manufacturer"
+    },
+    {
+      "name": "claim_organic",
+      "value": "Organic",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.95,
+      "reasoning": "The text states 'All our products are certified organic'.",
+      "category": "claim"
+    },
+    {
+      "name": "claim_gmo_free",
+      "value": "GMO free",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.95,
+      "reasoning": "The text includes 'GMO FREE' and repeats the claim.",
+      "category": "claim"
+    },
+    {
+      "name": "claim_vegan",
+      "value": "Vegan",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.95,
+      "reasoning": "The line 'Suitable for Vegans' appears in the dietary information.",
+      "category": "claim"
+    },
+    {
+      "name": "claim_no_added_sugar",
+      "value": "No added sugar",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "The text shows 'NO ADDED SUGAR' as a product claim.",
+      "category": "claim"
+    },
+    {
+      "name": "claim_oven_baked",
+      "value": "Oven baked",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "The word 'OVEN BAKED' is present on the label.",
+      "category": "claim"
+    },
+    {
+      "name": "ingredients",
+      "value": "Organic Wholegrain Oat Flakes (79%), Almonds, Pecans, Walnuts, Flax Seeds, Vegetable Oil (Rapeseed and Sunflower in varying proportions), Dried Strawberries, Blueberries, Cranberries, Pumpkin Seeds, Sunflower Seeds, Honey (1%), Coconut Sugar, Crystallized Ginger (cane sugar), Himalayan Pink Salt, Natural Flavoring",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.96,
+      "reasoning": "The ingredients list is explicitly provided after the word 'INGREDIENTS:'.",
+      "category": "ingredients"
+    },
+    {
+      "name": "allergen_information",
+      "value": "May contain almonds, Brazil nuts, pecan nuts, walnuts, cereals containing gluten, nuts, oats",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.95,
+      "reasoning": "The allergen section lists these possible contaminants.",
+      "category": "allergen"
+    },
+    {
+      "name": "dietary_information",
+      "value": "Suitable for vegans",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.95,
+      "reasoning": "Explicit statement under DIETARY INFORMATION.",
+      "category": "dietary"
+    },
+    {
+      "name": "storage_instructions",
+      "value": "Store in a cool, dry place. Once opened, keep packaging closed and eat within a month or by date shown.",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "The text provides these storage directions.",
+      "category": "storage"
+    },
+    {
+      "name": "nutrition_facts_per_100g_set_1",
+      "value": "Energy 197 kJ / 46 kcal, Fat 3.8 g, Saturates 1.1 g, Sugars 2.4 g, Salt 0.4 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.90,
+      "reasoning": "First nutrition table labelled 'NUTRITION FACTS Typical Values per 100 g'.",
+      "category": "nutrition_per_100g"
+    },
+    {
+      "name": "nutrition_facts_per_100g_set_2",
+      "value": "Energy 1868 kJ / 445 kcal, Fat 15 g, Saturates 2.2 g, Carbohydrate 65 g, Sugars 15 g, Fibre 6.9 g, Protein 9.0 g, Salt 0.04 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.90,
+      "reasoning": "Second nutrition table also labelled per 100 g but with different numbers.",
+      "category": "nutrition_per_100g"
+    },
+    {
+      "name": "nutrition_facts_conflict",
+      "value": "Two conflicting nutrition tables per 100 g are present; values differ substantially.",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.99,
+      "reasoning": "Both sets claim to be per 100 g but list different macro amounts.",
+      "category": "conflict"
+    },
+    {
+      "name": "serving_size",
+      "value": "85 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.96,
+      "reasoning": "The line 'Serving size 85' appears in the second nutrition block.",
+      "category": "serving"
+    },
+    {
+      "name": "servings_per_container",
+      "value": "8",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.96,
+      "reasoning": "The statement '8 servings per container' is provided.",
+      "category": "serving"
+    },
+    {
+      "name": "calories_per_serving",
+      "value": "166 kcal",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.95,
+      "reasoning": "Listed under the second nutrition table as 'Calories 166'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "total_fat_per_serving",
+      "value": "15 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.95,
+      "reasoning": "Second nutrition table shows 'Total Fat 15g'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "saturated_fat_per_serving",
+      "value": "5 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "Listed as 'Saturated Fat 5g' in the second table.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "trans_fat_per_serving",
+      "value": "8 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "Second table includes 'Trans Fat 8g'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "cholesterol_per_serving",
+      "value": "45 mg",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "Second table shows 'Cholesterol 45mg'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "sodium_per_serving",
+      "value": "23 mg",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "Second table lists 'Sodium 23mg'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "total_carbohydrate_per_serving",
+      "value": "66 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.95,
+      "reasoning": "Second table indicates 'Total Carbohydrate 66g'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "dietary_fiber_per_serving",
+      "value": "3 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "Second table shows 'Dietary Fiber 3g'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "total_sugars_per_serving",
+      "value": "18 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "Second table lists 'Total Sugars 18g'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "added_sugars_per_serving",
+      "value": "0 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "Second table includes 'Incl. 0g Added Sugars'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "protein_per_serving",
+      "value": "34 g",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.94,
+      "reasoning": "Second table shows 'Protein 34g'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "vitamin_d_per_serving",
+      "value": "89 mcg",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.93,
+      "reasoning": "Second table lists 'Vitamin D 89mcg'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "calcium_per_serving",
+      "value": "206 mg",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.93,
+      "reasoning": "Second table lists 'Calcium 206mg'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "iron_per_serving",
+      "value": "5 mg",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.93,
+      "reasoning": "Second table lists 'Iron 5mg'.",
+      "category": "nutrition_per_serving"
+    },
+    {
+      "name": "potassium_per_serving",
+      "value": "23 mg",
+      "sources": ["eabaf89bf302"],
+      "confidence": 0.93,
+      "reasoning": "Second table lists 'Potassium 23mg'.",
+      "category": "nutrition_per_serving"
+    }
+  ]
+}

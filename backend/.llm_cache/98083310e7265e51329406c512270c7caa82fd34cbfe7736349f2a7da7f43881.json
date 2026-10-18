@@ -1,0 +1,100 @@
+{
+  "facts": [
+    {
+      "name": "product_name",
+      "value": "BERRY CRUNCH GRANOLA",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Identified as the product name / title across front panels and packaging text.",
+      "category": "product_identity"
+    },
+    {
+      "name": "manufacturer",
+      "value": "DANCING FISH GRANOLA CO.",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Explicitly stated as 'PRODUCED BY DANCING FISH GRANOLA CO.'",
+      "category": "manufacturer"
+    },
+    {
+      "name": "net_weight",
+      "value": "480g",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Net weight declared on the pack as '480g'.",
+      "category": "packaging"
+    },
+    {
+      "name": "ingredients",
+      "value": "Organic Wholegrain Oat Flakes (79%), Almonds, Pecans, Walnuts, Flax Seeds, Vegetable Oil (Rapeseed and Sunflower in varying proportions), Dried Strawberries, Blueberries, Cranberries, Pumpkin Seeds, Sunflower Seeds, Honey (1%), Coconut Sugar, Crystallized Ginger (cane sugar), Himalayan Pink Salt. Natural Flavoring.",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Extracted from the INGREDIENTS section on carton.pdf.",
+      "category": "ingredients"
+    },
+    {
+      "name": "allergen_information",
+      "value": "May Contain Almonds, May Contain Brazil Nuts, May Contain Pecan Nuts, May Contain Walnuts or Cereals Containing Gluten, May Contain Nuts, Oats.",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Extracted from ALLERGEN INFORMATION statement.",
+      "category": "allergens"
+    },
+    {
+      "name": "dietary_suitability",
+      "value": "Suitable for Vegans / Suitable for vegetarians (vegan)",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Listed under DIETARY INFORMATION and marketing claims (note: honey is listed in ingredients, which may conflict with strict vegan definitions, but text explicitly states 'Suitable for Vegans').",
+      "category": "claims"
+    },
+    {
+      "name": "marketing_claims",
+      "value": "HIGH-GRAIN, PACKED WITH GOODNESS, OVEN BAKED, NO ADDED SUGAR, GMO FREE, Certified Organic, No artificial additives",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Key marketing callouts and claims present on the packaging panels.",
+      "category": "claims"
+    },
+    {
+      "name": "storage_instructions",
+      "value": "Store in a cool, dry place. Once opened, keep packaging closed and eat within a month or by date shown, for best before, see base of pack.",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Directly quoted from storage instructions on the pack.",
+      "category": "instructions"
+    },
+    {
+      "name": "servings_per_container",
+      "value": "8 servings per container",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Found in Nutrition Facts panel.",
+      "category": "nutrition"
+    },
+    {
+      "name": "serving_size",
+      "value": "85",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.9,
+      "reasoning": "Serving size specified in Nutrition Facts panel (unit is omitted in the source text, given simply as '85').",
+      "category": "nutrition"
+    },
+    {
+      "name": "nutrition_typical_values_per_100g",
+      "value": "Energy 1868 kJ / 445 kcal, Fat 15g (of which saturates 2.2g), Carbohydrate 65g (of which sugars 15g), Fibre 6.9g, Protein 9.0g, Salt 0.04g",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Extracted from the EU/UK style typical values per 100g nutrition table.",
+      "category": "nutrition"
+    },
+    {
+      "name": "nutrition_facts_per_serving",
+      "value": "Calories 166, Total Fat 15g (2.2% DV), Saturated Fat 5g (8% DV), Trans Fat 8g, Cholesterol 45mg (26% DV), Sodium 23mg (12% DV), Total Carbohydrate 66g (18% DV), Dietary Fiber 3g (5% DV), Total Sugars 18g (Incl. 0g Added Sugars, 0% DV), Protein 34g, Vitamin D 89mcg (12% DV), Calcium 206mg (48% DV), Iron 5mg (20% DV), Potassium 23mg (11% DV)",
+      "sources": ["750ab7d65da7"],
+      "confidence": 0.95,
+      "reasoning": "Extracted from the US-style Nutrition Facts panel.",
+      "category": "nutrition"
+    }
+  ]
+}
