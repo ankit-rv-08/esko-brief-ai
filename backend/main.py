@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.brief import generate_brief
+from src.followups import questions_from_gaps
 from src.conflicts import analyze
 from src.facts import extract_facts
 from src.ingest import ingest_directory
@@ -157,4 +157,23 @@ async def pipeline(files: list[UploadFile] = File(...)) -> dict[str, object]:
         "warnings": warnings,
         # NEW: Agentic self-critique results for UI display
         "critique": generated_brief.critique,
+        "questions": questions_from_gaps(analysis.gaps)
     }
+from pydantic import BaseModel
+from typing import List
+
+class RegenerateRequest(BaseModel):
+    facts: List[dict]
+    conflicts: List[dict]
+
+@app.post("/regenerate")
+def regenerate_brief(req: RegenerateRequest):
+    client = _get_client()
+    new_brief = generate_brief(
+        facts=req.facts, 
+        conflicts=req.conflicts,
+        gaps=[],
+        source_elements=[],
+        client=client
+    )
+    return {"brief": new_brief.model_dump(mode="json")}
