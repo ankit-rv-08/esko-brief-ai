@@ -145,6 +145,7 @@ function Index() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [regenerateError, setRegenerateError] = useState<string | null>(null);
+  const [pipelineData, setPipelineData] = useState<any>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const soundRef = useRef(sound);
   soundRef.current = sound;
@@ -209,6 +210,7 @@ function Index() {
       setConflicts(data.conflicts);
       setElements(data.elements);
       setQuestions(data.questions || []);
+      setPipelineData(data);
       
       setThinking(false); setActivity([]); setPhase("done"); setBtn("ready");
       setConfetti(true); setSparkle(true);
@@ -258,20 +260,57 @@ function Index() {
 
   const review = useBriefReview(brief?.sections || []);
 
-  const handleCitationClick = (factId: string) => {
-    const fact = facts.find((f) => f.id === factId);
-    if (fact && fact.sources?.[0]) {
-      const file = fact.sources[0];
-      const isXlsx = file.endsWith(".xlsx") || file.endsWith(".xls");
+  const handleCitationClick = (elementId: string) => {
+    const element = elements.find((e) => e.id === elementId);
+    if (element) {
+      const fileName = element.source_file.split('/').pop() || element.source_file;
+      const isXlsx = fileName.endsWith(".xlsx") || fileName.endsWith(".xls");
+      let loc = "p.1";
+      if (element.page !== undefined && element.page !== null) {
+        loc = `p.${element.page}`;
+      } else if (element.row !== undefined && element.row !== null) {
+        loc = `row ${element.row}`;
+      }
       openEvidence({
-        id: factId,
-        file,
+        id: elementId,
+        file: fileName,
         type: isXlsx ? "xlsx" : "pdf",
-        loc: "p.1",
+        loc,
         line: "",
-        snippet: fact.value
+        snippet: element.content
       });
     }
+  };
+
+  const handleDownloadMarkdown = () => {
+    if (!brief) return;
+    let markdown = `# ${brief.title}\n\n`;
+    brief.sections.forEach((section: any) => {
+      markdown += `## ${section.title}\n\n${review.textFor(section)}\n\n`;
+    });
+    if (brief.open_questions && brief.open_questions.length > 0) {
+      markdown += `## Open Questions for Agency\n\n`;
+      brief.open_questions.forEach((q: string, i: number) => {
+        markdown += `${i + 1}. ${q}\n`;
+      });
+      markdown += "\n";
+    }
+    if (elements && elements.length > 0) {
+      markdown += `## Sources\n\n`;
+      const uniqueFiles = Array.from(new Set(elements.map((e: any) => e.source_file)));
+      uniqueFiles.forEach((file: string) => {
+        markdown += `- ${file}\n`;
+      });
+    }
+    const blob = new Blob([markdown], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "brief.md";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const handleRegenerate = async () => {
@@ -360,46 +399,64 @@ function Index() {
             </section>
             {done && (
               <>
-                <section className="fade-up" style={{ animationDelay: "80ms" }}>
-                  <h3 className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Gaps <Badge n={2} amber /></h3>
-                  <div className="space-y-2">
-                    {[["Target retail price", "No source specifies the shelf price point."], ["Print run quantity", "Initial order volume is not defined."]].map(([t, d]) => (
-                      <div key={t} className="gap-card rounded-lg border border-border border-l-2 border-l-warning bg-warning-soft p-3">
-                        <div className="mb-1 text-[10.5px] uppercase text-warning">Missing detail</div><div className="text-[12.5px] font-semibold">{t}</div>
-                        <p className="mt-0.5 text-[12px] text-muted-foreground">{d}</p>
-                      </div>
-                    ))}
-                  </div>
-                  {questions.length > 0 && (
-                    <div className="mt-6 border-t pt-4">
-                      <h3 className="font-bold text-sm mb-3 flex items-center gap-2 text-indigo-700"><span className="bg-indigo-100 p-1 rounded">🤖</span> Jessy needs your input:</h3>
-                      {questions.map((q) => (
-                        <div key={q.id} className="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                          <p className="text-sm font-semibold text-gray-800">{q.question}</p>
-                          <p className="text-xs text-gray-500 mb-2">{q.why_it_matters}</p>
-                          <input type="text" className="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Type your answer here..." value={answers[q.id] || ""} onChange={(e) => setAnswers({...answers, [q.id]: e.target.value})} />
+                {gaps.length > 0 && (
+                  <section className="fade-up" style={{ animationDelay: "80ms" }}>
+                    <h3 className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Gaps <Badge n={gaps.length} amber /></h3>
+                    <div className="space-y-2">
+                      {gaps.map((gap: any, i: number) => (
+                        <div key={i} className="gap-card rounded-lg border border-border border-l-2 border-l-warning bg-warning-soft p-3">
+                          <div className="mb-1 text-[10.5px] uppercase text-warning">Missing detail</div>
+                          <div className="text-[12.5px] font-semibold">{gap.field || gap.description || "Unknown gap"}</div>
+                          <p className="mt-0.5 text-[12px] text-muted-foreground">{gap.reason || "No reason provided"}</p>
                         </div>
                       ))}
-                      {regenerateError && (
-                        <p className="mb-3 text-sm text-red-600">{regenerateError}</p>
-                      )}
-                      <button onClick={handleRegenerate} disabled={isRegenerating || Object.keys(answers).length === 0} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-semibold py-2 rounded-lg text-sm transition">
-                        {isRegenerating ? "Updating Brief..." : "Answer & Regenerate Brief"}
-                      </button>
                     </div>
-                  )}
-                </section>
-                <section className="fade-up" style={{ animationDelay: "160ms" }}>
-                  <h3 className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Conflicts <Badge n={1} /></h3>
-                  <div className="rounded-lg border border-border bg-card p-3">
-                    <div className="mb-2 flex items-center gap-2 text-[10.5px] uppercase text-muted-foreground"><span className="h-[5px] w-[5px] rounded-full bg-danger" />Board substrate</div>
-                    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-center">
-                      <Button variant="plain" size="plain" onClick={() => openEvidence(cites[2])} className="rounded-md bg-muted p-2 text-[12px] hover:shadow-sm"><div className="font-medium">Recycled Kraft</div><div className="text-[10px] text-muted-foreground">production_specs</div></Button>
-                      <span className="text-[10px] font-medium text-muted-foreground">VS</span>
-                      <Button variant="plain" size="plain" onClick={() => openEvidence(cites[3])} className="rounded-md bg-muted p-2 text-[12px] hover:shadow-sm"><div className="font-medium">Bleached White</div><div className="text-[10px] text-muted-foreground">retailer_req</div></Button>
+                    {questions.length > 0 && (
+                      <div className="mt-6 border-t pt-4">
+                        <h3 className="font-bold text-sm mb-3 flex items-center gap-2 text-indigo-700"><span className="bg-indigo-100 p-1 rounded">🤖</span> Jessy needs your input:</h3>
+                        {questions.map((q) => (
+                          <div key={q.id} className="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <p className="text-sm font-semibold text-gray-800">{q.question}</p>
+                            <p className="text-xs text-gray-500 mb-2">{q.why_it_matters}</p>
+                            <input type="text" className="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Type your answer here..." value={answers[q.id] || ""} onChange={(e) => setAnswers({...answers, [q.id]: e.target.value})} />
+                          </div>
+                        ))}
+                        {regenerateError && (
+                          <p className="mb-3 text-sm text-red-600">{regenerateError}</p>
+                        )}
+                        <button onClick={handleRegenerate} disabled={isRegenerating || Object.keys(answers).length === 0} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-semibold py-2 rounded-lg text-sm transition">
+                          {isRegenerating ? "Updating Brief..." : "Answer & Regenerate Brief"}
+                        </button>
+                      </div>
+                    )}
+                  </section>
+                )}
+                {conflicts.length > 0 && (
+                  <section className="fade-up" style={{ animationDelay: "160ms" }}>
+                    <h3 className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Conflicts <Badge n={conflicts.length} /></h3>
+                    <div className="space-y-2">
+                      {conflicts.map((conflict: any, i: number) => (
+                        <div key={i} className="rounded-lg border border-border bg-card p-3">
+                          <div className="mb-2 flex items-center gap-2 text-[10.5px] uppercase text-muted-foreground">
+                            <span className="h-[5px] w-[5px] rounded-full bg-danger" />
+                            {conflict.category || "Conflict"}
+                          </div>
+                          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-center">
+                            <div className="rounded-md bg-muted p-2 text-[12px]">
+                              <div className="font-medium">{conflict.value_a || "Value A"}</div>
+                              <div className="text-[10px] text-muted-foreground">{conflict.source_a || "Source A"}</div>
+                            </div>
+                            <span className="text-[10px] font-medium text-muted-foreground">VS</span>
+                            <div className="rounded-md bg-muted p-2 text-[12px]">
+                              <div className="font-medium">{conflict.value_b || "Value B"}</div>
+                              <div className="text-[10px] text-muted-foreground">{conflict.source_b || "Source B"}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                </section>
+                  </section>
+                )}
               </>
             )}
           </div>
@@ -495,10 +552,10 @@ function Index() {
                     <div className="mt-4 flex gap-4 font-mono text-[10.5px] text-muted-foreground"><span><AnimatedCount value={brief.sections.length} /> sections</span><span><AnimatedCount value={facts.length} /> facts</span></div>
                     <div className="space-y-6">
                       {brief?.sections.map((section, idx) => (
-                        <SectionCard key={idx} section={section} review={review} onCitationClick={handleCitationClick} facts={facts} />
+                        <SectionCard key={idx} section={section} review={review} onCitationClick={handleCitationClick} elements={elements} />
                       ))}
                     </div>
-                    <FinalizeBar review={review} />
+                    <FinalizeBar review={review} sections={brief?.sections || []} onDownloadMarkdown={handleDownloadMarkdown} />
                     <div className="fade-up mt-6 grid gap-4 md:grid-cols-2" style={{ animationDelay: "180ms" }}>
                       <div className="rounded-xl border border-border bg-warning-soft p-5">
                         <h3 className="text-sm font-semibold">Uncertainty</h3>

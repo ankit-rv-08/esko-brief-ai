@@ -2,6 +2,9 @@ import re
 import json
 
 QUESTION_TEMPLATES = [
+    (("legal name", "statement of identity"),
+     "What legal name / statement of identity should appear on the pack?",
+     "The statement of identity is mandatory on the front panel."),
     (("print run", "print quantity", "print volume"),
      "What is the expected print run (number of units)?",
      "The print run affects the printing process and material choices."),

@@ -8,6 +8,14 @@ export type Section = {
   confidence?: "high" | "medium" | "low";
 };
 
+export type SourceElement = {
+  id: string;
+  source_file: string;
+  page?: number;
+  row?: number;
+  sheet?: string;
+};
+
 export function useBriefReview(sections: Section[]) {
   const [edits, setEdits] = useState<Record<string, string>>({});
   const [reviewed, setReviewed] = useState<Record<string, boolean>>({});
@@ -47,7 +55,7 @@ export function useBriefReview(sections: Section[]) {
 
 export type BriefReview = ReturnType<typeof useBriefReview>;
 
-export function SectionCard({ section, review, onCitationClick, facts }: { section: Section; review: BriefReview; onCitationClick?: (id: string) => void; facts?: any[] }) {
+export function SectionCard({ section, review, onCitationClick, facts, elements }: { section: Section; review: BriefReview; onCitationClick?: (id: string) => void; facts?: any[]; elements?: SourceElement[] }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const edited = review.isEdited(section);
@@ -119,19 +127,28 @@ export function SectionCard({ section, review, onCitationClick, facts }: { secti
       ) : (
         <div className="leading-relaxed text-gray-700">
           <p className="whitespace-pre-wrap">{review.textFor(section)}</p>
-          {section.fact_ids && section.fact_ids.length > 0 && onCitationClick && facts && (
+          {section.fact_ids && section.fact_ids.length > 0 && onCitationClick && elements && (
             <div className="mt-3 flex flex-wrap gap-1">
-              {section.fact_ids.map((id, i) => {
-                const fact = facts.find((f) => f.id === id);
-                const source = fact?.sources?.[0] || "source";
-                const shortSource = source.length > 15 ? source.slice(0, 12) + "..." : source;
+              {Array.from(new Set(section.fact_ids)).map((id, i) => {
+                const element = elements.find((e) => e.id === id);
+                let label = "Unknown source";
+                if (element) {
+                  const fileName = element.source_file.split('/').pop() || element.source_file;
+                  if (element.page !== undefined && element.page !== null) {
+                    label = `${fileName} p.${element.page}`;
+                  } else if (element.row !== undefined && element.row !== null) {
+                    label = `${fileName} row ${element.row}`;
+                  } else {
+                    label = fileName;
+                  }
+                }
                 return (
                   <button
                     key={i}
                     onClick={() => onCitationClick(id)}
                     className="inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 hover:bg-blue-100 transition"
                   >
-                    📄 {shortSource}
+                    📄 {label}
                   </button>
                 );
               })}
@@ -155,15 +172,25 @@ export function SectionCard({ section, review, onCitationClick, facts }: { secti
   );
 }
 
-export function FinalizeBar({ review }: { review: BriefReview }) {
+export function FinalizeBar({ review, sections, onDownloadMarkdown }: { review: BriefReview; sections: Section[]; onDownloadMarkdown?: () => void }) {
   return (
     <div className="mt-8 rounded-lg border bg-gray-50 p-6 text-center">
       {review.finalized ? (
         <>
           <p className="mb-2 font-semibold text-green-700">Brief finalized and approved.</p>
-          <button className="text-sm text-gray-500 underline" onClick={review.reopen}>
-            Reopen for editing
-          </button>
+          <div className="flex justify-center gap-4">
+            {onDownloadMarkdown && (
+              <button
+                onClick={onDownloadMarkdown}
+                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 transition"
+              >
+                Download brief (.md)
+              </button>
+            )}
+            <button className="text-sm text-gray-500 underline" onClick={review.reopen}>
+              Reopen for editing
+            </button>
+          </div>
         </>
       ) : (
         <>
