@@ -1,0 +1,109 @@
+{
+  "title": "Design Brief: Dancing Fish Granola Berry Crunch",
+  "sections": [
+    {
+      "title": "Product Overview",
+      "content": "Dancing Fish’s Granola Berry Crunch is a high-grain, oven-baked granola marketed in the United States and the broader North American region. The product is sold in a 480 g recyclable paperboard carton and provides eight 85 g servings per container, delivering 166 calories per serving. It is positioned as an organic, GMO-free, vegetarian (vegan) snack with no artificial additives and no added sugar.",
+      "fact_ids": [
+        "01c41d5f5fa6",
+        "3e3a38e9b2ea",
+        "55198fedca38",
+        "95680481d4cd",
+        "6d9ce06bff0f",
+        "2a2d37e0af8b",
+        "393b2c577c9c",
+        "ac04ce24acba",
+        "8552b2c0cb5e",
+        "1c5526407eca",
+        "6c82fb7835a6"
+      ],
+      "confidence": "high",
+      "confidence_reason": "All statements are directly supported by high-confidence extracted facts.",
+      "needs_human_review": false,
+      "review_reason": null
+    },
+    {
+      "title": "Packaging Requirements",
+      "content": "The primary packaging is a carton identified by label identifier DF-GRAN-BERRY-US-001, BPN DF-BERRY-480G-US, and UPC barcode 1 20000 00003 6. Storage instructions mandate keeping in a cool, dry place, and once opened, keeping the packaging closed and eating within a month or by the date shown, seeing the base of the pack for best before dating. The package must display the recyclable paperboard symbol and the \"Packaging powered by Esko\" logo.",
+      "fact_ids": [
+        "6d9ce06bff0f",
+        "cb1a3c8eef12",
+        "09cd4cb65eca",
+        "9da9afd49ff5",
+        "c6ac7969cd96",
+        "ae1be4f894ab"
+      ],
+      "confidence": "high",
+      "confidence_reason": "Packaging identifiers and mandatory storage instructions are fully aligned with source facts.",
+      "needs_human_review": true,
+      "review_reason": "Storage instructions were updated to include full mandatory text and the omitted BPN identifier was incorporated."
+    },
+    {
+      "title": "Mandatory Content",
+      "content": "The carton must list the full ingredient list, beginning with organic wholegrain oat flakes (79%) followed by almonds, pecans, walnuts, flax seeds, and assorted dried berries and seeds. An allergen statement warns that the product may contain almonds, Brazil nuts, pecans, walnuts, cereals containing gluten, nuts, and oats. The nutrition panel follows the US FDA standard vertical format based on an 85 g serving size with 8 servings per container, while nutrition values were evaluated at 250 g, 480 g, and 1000 g amounts, and concludes with the standard percent Daily Value advice statement.",
+      "fact_ids": [
+        "5892463c26b9",
+        "2babc8dbc7b9",
+        "a82d356aca1b",
+        "1c5526407eca",
+        "8552b2c0cb5e",
+        "6f8706d7b5e9",
+        "42319e6650d0",
+        "2ef696abdea5",
+        "3094a522ff40",
+        "5e215a237e8e",
+        "24b19ee6afc4",
+        "281896fa8bbf",
+        "97ac995520c2",
+        "ae8ba40284ed",
+        "cc4859023bc7",
+        "48e47c29c141",
+        "6f46f80c2a82",
+        "fa5479d7ca6a",
+        "80769ce5b2c7",
+        "356cc7b4fc35",
+        "1b97c2986f26",
+        "f747612f78f9"
+      ],
+      "confidence": "high",
+      "confidence_reason": "Corrected panel serving size requirements and removed unsupported front-of-pack placement claims.",
+      "needs_human_review": true,
+      "review_reason": "Corrected ingredient list placement claim and clarified the 85 g serving size versus evaluated nutrient sample sizes."
+    },
+    {
+      "title": "Claims & Certifications",
+      "content": "The product can display the claims “Certified organic,” “GMO-free,” “Suitable for vegetarians (vegan),” “No artificial additives,” “No added sugar,” and “Oven baked.” The marketing tagline “Start tapping, swishing & shaking your tail fins!” may be used for promotional copy.",
+      "fact_ids": [
+        "f6d9c13d3ed3",
+        "d7b3e9fdc91c"
+      ],
+      "confidence": "high",
+      "confidence_reason": "Claims are directly extracted from the source; certification bodies are not specified, so the claim is presented as a marketing statement.",
+      "needs_human_review": false,
+      "review_reason": null
+    },
+    {
+      "title": "Design Direction",
+      "content": "Visual design should highlight the vibrant berry mix and nut components, using a bright, natural color palette that reinforces the organic positioning. Incorporate the recyclable paperboard mark and Esko logo subtly on the side panel. The tagline can appear on the front or back to convey the playful brand personality.",
+      "fact_ids": [
+        "d7b3e9fdc91c",
+        "ae1be4f894ab"
+      ],
+      "confidence": "high",
+      "confidence_reason": "Design cues are based on the provided marketing text and mandatory marks.",
+      "needs_human_review": false,
+      "review_reason": null
+    }
+  ],
+  "uncertainty": [
+    "Legal name/statement of identity, specific allergen label formatting requirements, exact layout specifications for the FDA nutrition panel, verification of organic certification authority, and placement guidelines for the barcode are not defined in the sources."
+  ],
+  "open_questions": [
+    "What is the exact legal product name or statement of identity required on the label?",
+    "Are there specific wording or format rules for the allergen statement beyond the provided text?",
+    "What are the detailed layout rules for the US FDA vertical nutrition panel (font size, column order, %DV placement)?",
+    "Which certification body validates the “Certified organic” claim and does the label need a specific logo?",
+    "Where should the UPC barcode be positioned on the carton for compliance?",
+    "Are there any additional mandatory symbols (e.g., nutrition claim symbols, country of origin) required for the US market?"
+  ]
+}

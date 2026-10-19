@@ -1,0 +1,24 @@
+{
+  "issues": [
+    {
+      "section": "Mandatory Content",
+      "issue": "The draft states that the front-of-pack must list the full ingredient list, but the source fact specifies 'ingredient_list_carton' without requiring it to be placed on the front of the pack.",
+      "severity": "medium"
+    },
+    {
+      "section": "Mandatory Content",
+      "issue": "The draft describes 250g, 480g, and 1000g as serving sizes to be included on the nutrition panel, whereas the source lists the product serving size as 85 (with 8 servings per container) and identifies 250g, 480g, and 1000g only as 'nutrition_serving_sizes_evaluated'.",
+      "severity": "high"
+    },
+    {
+      "section": "Packaging Requirements",
+      "issue": "The BPN code 'DF-BERRY-480G-US' is omitted from the packaging requirements.",
+      "severity": "low"
+    },
+    {
+      "section": "Packaging Requirements",
+      "issue": "The storage instructions in the draft omit the mandatory requirement to 'eat within a month or by date shown, for best before, see base of pack'.",
+      "severity": "medium"
+    }
+  ]
+}
