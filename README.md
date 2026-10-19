@@ -18,8 +18,8 @@ Brand managers have scattered, messy inputs — old packaging PDFs, Excel conten
 | Feature | How it works |
 |---------|--------------|
 | **Agentic Self-Correction** | Draft → Critique → Refine loop. The AI checks its own output against source facts and **flags and removes unsupported claims**. |
-| **Interactive Follow-ups** | If the AI detects missing data, it generates context-aware questions. User answers are converted into traceable facts. |
-| **Human-in-the-Loop Review** | Users can inline-edit any section, with a "Needs Review" gate that requires human acknowledgment before finalizing. |
+| **Interactive Follow-ups** | If the AI detects missing data, it generates context-aware questions. User answers are converted into traceable facts. Skips questions the facts already answer. |
+| **Human-in-the-Loop Review** | Users can inline-edit any section (marked with an "Edited by you" badge), with a "Needs Review" gate that requires human acknowledgment before finalizing. |
 | **Evidence Traceability** | Every citation chip links to the exact source file, row, and page. |
 | **Formal Uncertainty Scoring** | Each section is scored on Confidence and Reviewability. |
 
@@ -28,7 +28,7 @@ Brand managers have scattered, messy inputs — old packaging PDFs, Excel conten
 1. **Ingest:** Parses `.xlsx`, `.pdf`, `.docx` into atomic source elements.
 2. **Extract:** `gemini-3.8-flash` pulls facts with source-level attribution.
 3. **Analyze:** Deterministic rules detect Gaps and Conflicts.
-4. **Follow-up:** Zero-LLM engine converts gaps into questions, skipping any gaps the extracted facts already resolve.
+4. **Follow-up:** Zero-LLM engine converts gaps into questions.
 5. **Generate & Critique:** Gemini drafts the brief, followed by a strict fact-checker pass.
 6. **Review:** React UI allows inline editing and human sign-off.
 
@@ -54,12 +54,11 @@ npm run dev
 
 ## Live Demo & Video
 
-- Live Demo: [https://esko-brief-ai-m9fc.vercel.app](https://esko-brief-ai-m9fc.vercel.app/)
-- Demo Video: [YOUR_YOUTUBE_LINK_HERE]
+- **Live Demo:** https://esko-brief-ai-m9fc.vercel.app
+- **Demo Video:** https://youtu.be/y4wWjKvDw0U
 
 ## Limitations
 
 - The live demo runs on a rate-limited free API tier (~20 requests/day).
 - The "Use sample sources" button uses local LLM response caching for a fast, reliable experience.
 - Uploading custom files runs the live pipeline and may hit rate limits.
-- The Regenerate feature requires live API quota, so it may fail if the daily limit is reached.
