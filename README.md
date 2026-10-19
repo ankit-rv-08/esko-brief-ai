@@ -20,16 +20,23 @@ Brand managers have scattered, messy inputs — old packaging PDFs, Excel conten
 | **Agentic Self-Correction** | Draft → Critique → Refine loop. The AI checks its own output against source facts and **flags and removes unsupported claims**. |
 | **Interactive Follow-ups** | If the AI detects missing data, it generates context-aware questions. User answers are converted into traceable facts. |
 | **Human-in-the-Loop Review** | Users can inline-edit any section, with a "Needs Review" gate that requires human acknowledgment before final export. |
-| **Formal Uncertainty Scoring** | Each section is scored on **Confidence** AND **Reviewability** (whether a human must check it). |
+| **Formal Uncertainty Scoring** | Each section is scored on **Confidence** AND **Reviewability**. |
 | **Evidence Traceability** | Every citation chip links to the exact source file, row, and page. |
+
+## Live Demo & Video
+
+- **Live Demo:** [https://esko-brief-ai-m9fc.vercel.app](https://esko-brief-ai-m9fc.vercel.app)
+- **Demo Video:** [https://www.youtube.com/watch?v=fjINdYkxqlo](https://www.youtube.com/watch?v=fjINdYkxqlo)
+
+*Note: The live demo uses local LLM response caching for a fast, reliable experience. Uploading custom files runs the live pipeline on a rate-limited free API tier.*
 
 ## Architecture
 
 1. **Ingest:** Parses `.xlsx`, `.pdf`, `.docx` into atomic source elements.
-2. **Extract:** `gemini-3.8-flash` (Fallback: `openai/gpt-oss-120b` via Groq) pulls facts with source-level attribution.
-3. **Analyze:** Deterministic rules detect **Gaps** and **Conflicts**.
-4. **Follow-up:** Zero-LLM heuristic engine converts gaps into natural language questions.
-5. **Generate & Critique:** Gemini drafts a 6-section brief, followed by a strict fact-checker pass.
+2. **Extract:** `gemini-3.8-flash` pulls facts with source-level attribution.
+3. **Analyze:** Deterministic rules detect Gaps and Conflicts.
+4. **Follow-up:** Zero-LLM engine converts gaps into questions.
+5. **Generate & Critique:** Gemini drafts the brief, followed by a strict fact-checker pass.
 6. **Review:** React UI allows inline editing and human sign-off before export.
 
 ## Quick Start
@@ -40,7 +47,6 @@ cd backend
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 echo "GEMINI_API_KEY=your_key" > .env
-echo "GROQ_API_KEY=your_key" >> .env
 python -m uvicorn main:app --reload --port 8000
 ```
 
@@ -51,14 +57,3 @@ npm install
 echo "VITE_API_URL=http://127.0.0.1:8000" > .env.local
 npm run dev
 ```
-
-## Live Demo & Video
-
-- **Live Demo:** [Vercel Deployment](https://your-live-vercel-link.vercel.app)
-- **Demo Video:** [YouTube Video](https://www.youtube.com/watch?v=fjINdYkxqlo)
-
-## Limitations
-
-- The live demo runs on a rate-limited free API tier (~20 requests/day).
-- The "Use sample sources" button uses local LLM response caching for a fast, reliable experience.
-- Uploading custom files runs the live pipeline and may hit rate limits.
