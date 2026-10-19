@@ -1,0 +1,164 @@
+{
+  "facts": [
+    {
+      "name": "brand_name",
+      "value": "Dancing Fish",
+      "sources": ["3f3850e19d75", "3202df448d85"],
+      "confidence": 1.0,
+      "reasoning": "The brand is explicitly listed as Dancing Fish in the content sheet and carton artwork indicates 'PRODUCED BY DANCING FISH GRANOLA CO.'",
+      "category": "product_identity"
+    },
+    {
+      "name": "product_name",
+      "value": "Granola Berry Crunch",
+      "sources": ["2f7540d275bb", "fa01d0cc3f51", "3202df448d85"],
+      "confidence": 1.0,
+      "reasoning": "Identified as Granola Berry Crunch across both the artwork and the content sheet.",
+      "category": "product_identity"
+    },
+    {
+      "name": "product_type",
+      "value": "Granola - High-Grain",
+      "sources": ["b42481150968", "3202df448d85"],
+      "confidence": 0.95,
+      "reasoning": "The content sheet specifies 'Granola - High-Grain', matching 'HIGH-GRAIN' and 'GRANOLA' on the carton.",
+      "category": "product_identity"
+    },
+    {
+      "name": "label_identifier",
+      "value": "DF-GRAN-BERRY-US-001",
+      "sources": ["e8070b913a63"],
+      "confidence": 0.85,
+      "reasoning": "Listed in the content sheet with a note that it is constructed following the FR pattern and requires confirmation.",
+      "category": "metadata"
+    },
+    {
+      "name": "bpn",
+      "value": "DF-BERRY-480G-US",
+      "sources": ["ed4fdaa3efcf"],
+      "confidence": 0.8,
+      "reasoning": "Assumed from the FR BPN pattern with a US suffix in the content sheet.",
+      "category": "metadata"
+    },
+    {
+      "name": "upc_barcode",
+      "value": "1 20000 00003 6",
+      "sources": ["ff29ec2b3287"],
+      "confidence": 0.95,
+      "reasoning": "Directly specified in row 12 of the US content sheet.",
+      "category": "metadata"
+    },
+    {
+      "name": "target_market_country",
+      "value": "United States",
+      "sources": ["2f7540d275bb"],
+      "confidence": 1.0,
+      "reasoning": "Specified as United States in the content sheet.",
+      "category": "target_market"
+    },
+    {
+      "name": "target_region",
+      "value": "North America",
+      "sources": ["7debba3746d2", "a530a8ee90b7"],
+      "confidence": 1.0,
+      "reasoning": "Specified under Region/Cluster and Operating Unit in the content sheet.",
+      "category": "target_market"
+    },
+    {
+      "name": "net_weight",
+      "value": "480g",
+      "sources": ["3202df448d85", "13b7e939bc91", "75fc6f9649e7"],
+      "confidence": 1.0,
+      "reasoning": "Consistently stated as 480g across the carton packaging and content sheet.",
+      "category": "packaging"
+    },
+    {
+      "name": "package_type",
+      "value": "Carton",
+      "sources": ["202197f03282"],
+      "confidence": 1.0,
+      "reasoning": "Identified as Carton in the content sheet and source file name carton.pdf.",
+      "category": "packaging"
+    },
+    {
+      "name": "process_type",
+      "value": "Oven Baked",
+      "sources": ["2e5a54ecf2a8", "3202df448d85"],
+      "confidence": 1.0,
+      "reasoning": "Both the carton packaging and the content sheet list the process type as Oven Baked.",
+      "category": "processing"
+    },
+    {
+      "name": "ingredient_list_carton",
+      "value": "Organic Wholegrain Oat Flakes (79%), Almonds, Pecans, Walnuts, Flax Seeds, Vegetable Oil (Rapeseed and Sunflower in varying proportions), Dried Strawberries, Blueberries, Cranberries, Pumpkin Seeds, Sunflower Seeds, Honey (1%), Coconut Sugar, Crystallized Ginger (cane sugar), Himalayan Pink Salt. Natural Flavoring.",
+      "sources": ["3202df448d85"],
+      "confidence": 0.95,
+      "reasoning": "Directly transcribed from the carton dieline proof. Note conflict with content sheet which lists 9% Honey and omits Walnuts/Flax/Pumpkin seeds.",
+      "category": "ingredients"
+    },
+    {
+      "name": "allergen_statement",
+      "value": "ALLERGEN INFORMATION: May Contain Almonds, May Contain Brazil Nuts, May Contain Pecan Nuts, May Contain Walnuts or Cereals Containing Gluten, May Contain Nuts, Oats.",
+      "sources": ["3202df448d85", "67d252c8479d"],
+      "confidence": 0.95,
+      "reasoning": "Exact allergen text found on the carton and transcribed into the content sheet.",
+      "category": "allergens"
+    },
+    {
+      "name": "storage_instructions",
+      "value": "Store in a cool, dry place. Once opened, keep packaging closed and eat within a month or by date shown, for best before, see base of pack.",
+      "sources": ["3202df448d85", "1fcf81419db6"],
+      "confidence": 1.0,
+      "reasoning": "Identical wording present on carton artwork and in the content sheet.",
+      "category": "instructions"
+    },
+    {
+      "name": "marketing_tagline",
+      "value": "Start tapping, swishing & shaking your tail fins!",
+      "sources": ["3202df448d85", "c219e44e485c"],
+      "confidence": 1.0,
+      "reasoning": "Marketing text appears on both carton artwork and content sheet.",
+      "category": "marketing"
+    },
+    {
+      "name": "servings_per_container",
+      "value": "8",
+      "sources": ["3202df448d85", "278563b8ff8c"],
+      "confidence": 1.0,
+      "reasoning": "Listed as 8 servings per container in both the US Nutrition Facts panel on the carton and the content sheet.",
+      "category": "nutrition"
+    },
+    {
+      "name": "nutrition_panel_format",
+      "value": "US FDA Standard (Vertical)",
+      "sources": ["0d94677826b5"],
+      "confidence": 0.95,
+      "reasoning": "Recorded in the content sheet for the US label.",
+      "category": "nutrition"
+    },
+    {
+      "name": "serving_size",
+      "value": "85",
+      "sources": ["3202df448d85", "7f06ccd65b66"],
+      "confidence": 0.8,
+      "reasoning": "The US Nutrition Facts panel on the carton shows 'Serving size 85', though the unit is not explicitly stated and content sheet notes it was not fully clear.",
+      "category": "nutrition"
+    },
+    {
+      "name": "calories_per_serving",
+      "value": "166",
+      "sources": ["3202df448d85"],
+      "confidence": 0.95,
+      "reasoning": "Specified on the US Nutrition Facts panel on carton artwork.",
+      "category": "nutrition"
+    },
+    {
+      "name": "dietary_claims",
+      "value": "Certified organic, GMO free, suitable for vegetarians (vegan), with no artificial additives, No Added Sugar, Oven Baked",
+      "sources": ["3202df448d85", "5309ba97bef9", "56ec74d3487f"],
+      "confidence": 0.95,
+      "reasoning": "Derived from carton front and back panel text and content sheet claim notes.",
+      "category": "claims"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "issues": [
+    {
+      "section": "Packaging Requirements",
+      "issue": "The section abruptly ends after 'Required identification codes include' and omits mandatory codes present in the source facts: UPC barcode (1 20000 00003 6), BPN (DF-BERRY-480G-US), and label identifier (DF-GRAN-BERRY-US-001).",
+      "severity": "high"
+    },
+    {
+      "section": "Mandatory Content",
+      "issue": "The section cuts off mid-sentence and omits essential mandatory packaging information from the source facts, including the ingredient list, allergen statement, storage instructions, serving size (85g), and nutrition facts values.",
+      "severity": "high"
+    },
+    {
+      "section": "Claims & Certifications",
+      "issue": "The dietary claims statement is truncated mid-word ('vegetari') and omits the remaining verified claims: suitable for vegans, no artificial additives, No Added Sugar, and Oven Baked.",
+      "severity": "medium"
+    },
+    {
+      "section": "Design Direction",
+      "issue": "The section text cuts off mid-sentence ('brand visual ') and omits available branding marks such as the recyclable paperboard mark and 'Packaging powered by Esko' logo.",
+      "severity": "medium"
+    }
+  ]
+}

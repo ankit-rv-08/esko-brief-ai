@@ -1,0 +1,156 @@
+{
+  "facts": [
+    {
+      "name": "nutrition_panel_bottom_statement",
+      "value": "The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "sources": ["1df86563a473"],
+      "confidence": 1.0,
+      "reasoning": "Direct extraction of the Nutrition Panel Bottom Statement footnote.",
+      "category": "nutrition"
+    },
+    {
+      "name": "other_text_marks",
+      "value": "Recyclable paperboard mark; \"Packaging powered by Esko\" logo",
+      "sources": ["3564994831ed"],
+      "confidence": 1.0,
+      "reasoning": "Extracted from the Other Text field in the content sheet.",
+      "category": "branding"
+    },
+    {
+      "name": "alcohol_by_volume",
+      "value": "N/A",
+      "sources": ["14d735bdc77a"],
+      "confidence": 1.0,
+      "reasoning": "Directly stated as N/A in the content sheet.",
+      "category": "product_details"
+    },
+    {
+      "name": "nutrition_serving_sizes_evaluated",
+      "value": "250g | 480g | 1000g",
+      "sources": ["2d5c506a8339", "c355d56d88f9"],
+      "confidence": 1.0,
+      "reasoning": "Identifies the nutrient composition column headers per serving.",
+      "category": "nutrition"
+    },
+    {
+      "name": "calories",
+      "value": "250g: 166; 480g: 319; 1000g: 664",
+      "sources": ["403f9d67715c"],
+      "confidence": 1.0,
+      "reasoning": "Calories values across the 250g, 480g, and 1000g columns.",
+      "category": "nutrition"
+    },
+    {
+      "name": "total_fat",
+      "value": "250g: 15g (2.2%*); 480g: 28.8g (4.2%*); 1000g: 60g (8.8%*)",
+      "sources": ["300f18068788"],
+      "confidence": 1.0,
+      "reasoning": "Total fat amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "saturated_fat",
+      "value": "250g: 5g (8%); 480g: 9.6g (15.4%); 1000g: 20g (32%)",
+      "sources": ["a1e5a65015f5"],
+      "confidence": 1.0,
+      "reasoning": "Saturated fat amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "trans_fat",
+      "value": "250g: 8g; 480g: 15.4g; 1000g: 32g",
+      "sources": ["1457ed68cf77"],
+      "confidence": 1.0,
+      "reasoning": "Trans fat amounts across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "cholesterol",
+      "value": "250g: 45mg (26%*); 480g: 86.4mg (49.9%*); 1000g: 180mg (104%*)",
+      "sources": ["41237afe3b3d"],
+      "confidence": 1.0,
+      "reasoning": "Cholesterol amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "sodium",
+      "value": "250g: 25mg (12%*); 480g: 48mg (23%*); 1000g: 100mg (48%*)",
+      "sources": ["7465a2c1a73d"],
+      "confidence": 1.0,
+      "reasoning": "Sodium amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "total_carbohydrate",
+      "value": "250g: 15g (18%); 480g: 28.8g (34.6%); 1000g: 60g (72%)",
+      "sources": ["db25b85b4ec8"],
+      "confidence": 1.0,
+      "reasoning": "Total carbohydrate amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "dietary_fiber",
+      "value": "250g: 3g (5%); 480g: 5.8g (9.6%); 1000g: 12g (20%)",
+      "sources": ["6894e283c86b"],
+      "confidence": 1.0,
+      "reasoning": "Dietary fiber amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "total_sugars",
+      "value": "250g: 18g; 480g: 34.6g; 1000g: 72g",
+      "sources": ["fa2bbe26bc5d"],
+      "confidence": 1.0,
+      "reasoning": "Total sugars amounts across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "added_sugars",
+      "value": "250g: 0g (0%); 480g: 0g (0%); 1000g: 0g (0%)",
+      "sources": ["72448e053a98"],
+      "confidence": 1.0,
+      "reasoning": "Included added sugars amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "protein",
+      "value": "250g: 34g; 480g: 65.3g; 1000g: 136g",
+      "sources": ["acf93ae99497"],
+      "confidence": 1.0,
+      "reasoning": "Protein amount across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "vitamin_d",
+      "value": "250g: 89mcg (12%); 480g: 170.9mcg (23%); 1000g: 356mcg (48%)",
+      "sources": ["12a64fdb9a57"],
+      "confidence": 1.0,
+      "reasoning": "Vitamin D amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "calcium",
+      "value": "250g: 206mg (48%); 480g: 395.5mg (92.2%); 1000g: 824mg (192%)",
+      "sources": ["ab654d3bc98e"],
+      "confidence": 1.0,
+      "reasoning": "Calcium amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "iron",
+      "value": "250g: 5mg (20%); 480g: 9.6mg (38.4%); 1000g: 20mg (80%)",
+      "sources": ["2857d0bb57f2"],
+      "confidence": 1.0,
+      "reasoning": "Iron amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    },
+    {
+      "name": "potassium",
+      "value": "250g: 23mg (11%); 480g: 44.2mg (21.1%); 1000g: 92mg (44%)",
+      "sources": ["bbe7c97d785a"],
+      "confidence": 1.0,
+      "reasoning": "Potassium amount and %DV across 250g, 480g, and 1000g servings.",
+      "category": "nutrition"
+    }
+  ]
+}
