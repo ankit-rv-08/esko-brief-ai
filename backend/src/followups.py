@@ -1,11 +1,6 @@
-"""Zero-LLM helpers for the follow-up question flow and trust checks.
-
-Schema-agnostic: pass plain strings/dicts and adapt field names at the call site.
-Drop into backend/src/followups.py.
-"""
 import re
+import json
 
-# (keywords found in the gap text, question, why it matters). First match wins, so order matters.
 QUESTION_TEMPLATES = [
     (("print run", "print quantity", "print volume"),
      "What is the expected print run (number of units)?",
@@ -39,27 +34,41 @@ QUESTION_TEMPLATES = [
      "Mandatory content differs by market."),
 ]
 
+def _gap_text(gap):
+    if isinstance(gap, str):
+        return gap
+    if isinstance(gap, dict):
+        return " ".join(str(v) for v in gap.values())
+    for attr in ("field", "reason", "description", "name"):
+        value = getattr(gap, attr, None)
+        if value:
+            return str(value)
+    return str(gap)
 
-def questions_from_gaps(gaps):
-    """gaps: list of strings, or dicts whose values describe the gap."""
+def questions_from_gaps(gaps, fact_texts=None):
+    blob = ""
+    if fact_texts:
+        blob = re.sub(r"[_\-]+", " ", " ".join(fact_texts).lower())
+
     out = []
-    for i, gap in enumerate(gaps):
-        text = gap if isinstance(gap, str) else getattr(gap, "field", str(gap))
-        low = text.lower()
-        question = why = None
-        for keys, q, w in QUESTION_TEMPLATES:
-            if any(k in low for k in keys):
-                question, why = q, w
-                break
-        if question is None:
+    for gap in gaps:
+        text = _gap_text(gap)
+        low = re.sub(r"[_\-]+", " ", text.lower())
+        match = next(
+            ((keys, q, w) for keys, q, w in QUESTION_TEMPLATES if any(k in low for k in keys)),
+            None,
+        )
+        if match:
+            keys, question, why = match
+            if blob and any(k in blob for k in keys):
+                continue  # the facts already answer this
+        else:
             question = f"Can you provide the missing information: {text.strip()[:120]}?"
             why = "The brief cannot be finalised without it."
-        out.append({"id": f"q{i + 1}", "gap": text, "question": question, "why_it_matters": why})
+        out.append({"id": f"q{len(out) + 1}", "gap": text, "question": question, "why_it_matters": why})
     return out
 
-
 NUM = re.compile(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?")
-
 
 def _numbers(text):
     found = set()
@@ -70,13 +79,7 @@ def _numbers(text):
         found.add(n)
     return found
 
-
 def ungrounded_numbers(section_text, cited_fact_texts, ignore_below=10):
-    """Numbers in generated text that appear in none of the cited facts.
-
-    Treat the result as 'needs a look', not as proof of error (years and counts can be fine).
-    Small whole numbers (e.g. '6 sections') are ignored.
-    """
     source = _numbers(" ".join(cited_fact_texts))
     flagged = []
     for n in sorted(_numbers(section_text), key=float):
@@ -85,8 +88,3 @@ def ungrounded_numbers(section_text, cited_fact_texts, ignore_below=10):
         if n not in source:
             flagged.append(n)
     return flagged
-
-
-if __name__ == "__main__":
-    print(questions_from_gaps(["Target retail price not found", "Print run quantity missing", "Brand voice unclear"]))
-    print(ungrounded_numbers("The pack holds 480 g, priced at 4.50, shelf life 18 months.", ["Net weight: 480 g", "Price 4.5"]))

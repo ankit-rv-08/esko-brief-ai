@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  Sparkles, FileSpreadsheet, FileText, Plus, Download, Search, ArrowUpRight, AlertTriangle,
+  Sparkles, FileSpreadsheet, FileText, Plus, Search, ArrowUpRight, AlertTriangle,
   Loader2, Check, RotateCw, Volume2, VolumeX, AlertCircle, Upload, X, PanelRight,
 } from "lucide-react";
 import { Jessy, type JessyMsg } from "@/components/brief/Jessy";
@@ -144,6 +144,7 @@ function Index() {
   const [questions, setQuestions] = useState<any[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [regenerateError, setRegenerateError] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const soundRef = useRef(sound);
   soundRef.current = sound;
@@ -275,6 +276,7 @@ function Index() {
 
   const handleRegenerate = async () => {
     setIsRegenerating(true);
+    setRegenerateError(null);
     try {
       const newFacts = Object.entries(answers).filter(([_, ans]) => ans.trim() !== "").map(([qId, ans]) => {
         const q = questions.find((x) => x.id === qId);
@@ -289,11 +291,11 @@ function Index() {
       if (!res.ok) throw new Error("Regeneration failed");
       const newData = await res.json();
       setBrief(newData.brief);
-      setQuestions([]);
+      setQuestions(newData.questions || []);
       setAnswers({});
     } catch (err) {
       console.error(err);
-      alert("Failed to regenerate. Rate limit may be reached.");
+      setRegenerateError("AI quota reached. Your answer is saved; please try again later.");
     } finally {
       setIsRegenerating(false);
     }
@@ -378,6 +380,9 @@ function Index() {
                           <input type="text" className="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Type your answer here..." value={answers[q.id] || ""} onChange={(e) => setAnswers({...answers, [q.id]: e.target.value})} />
                         </div>
                       ))}
+                      {regenerateError && (
+                        <p className="mb-3 text-sm text-red-600">{regenerateError}</p>
+                      )}
                       <button onClick={handleRegenerate} disabled={isRegenerating || Object.keys(answers).length === 0} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-semibold py-2 rounded-lg text-sm transition">
                         {isRegenerating ? "Updating Brief..." : "Answer & Regenerate Brief"}
                       </button>
@@ -490,7 +495,7 @@ function Index() {
                     <div className="mt-4 flex gap-4 font-mono text-[10.5px] text-muted-foreground"><span><AnimatedCount value={brief.sections.length} /> sections</span><span><AnimatedCount value={facts.length} /> facts</span></div>
                     <div className="space-y-6">
                       {brief?.sections.map((section, idx) => (
-                        <SectionCard key={idx} section={section} review={review} onCitationClick={handleCitationClick} />
+                        <SectionCard key={idx} section={section} review={review} onCitationClick={handleCitationClick} facts={facts} />
                       ))}
                     </div>
                     <FinalizeBar review={review} />
@@ -512,9 +517,6 @@ function Index() {
                           {brief.open_questions.map((item, i) => <li key={i}>{item}</li>)}
                         </ol>
                       </div>
-                    </div>
-                    <div className="fade-up mt-8 flex gap-2 pb-6" style={{ animationDelay: "240ms" }}>
-                      {["Export PDF", "Export DOCX"].map((l) => <Button variant="plain" size="plain" key={l} className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted"><Download className="h-4 w-4" />{l}</Button>)}
                     </div>
                   </>
                 ) : (

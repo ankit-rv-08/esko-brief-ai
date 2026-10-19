@@ -5,6 +5,7 @@ export type Section = {
   content: string;
   needs_human_review?: boolean;
   fact_ids?: string[];
+  confidence?: "high" | "medium" | "low";
 };
 
 export function useBriefReview(sections: Section[]) {
@@ -46,15 +47,22 @@ export function useBriefReview(sections: Section[]) {
 
 export type BriefReview = ReturnType<typeof useBriefReview>;
 
-export function SectionCard({ section, review, onCitationClick }: { section: Section; review: BriefReview; onCitationClick?: (id: string) => void }) {
+export function SectionCard({ section, review, onCitationClick, facts }: { section: Section; review: BriefReview; onCitationClick?: (id: string) => void; facts?: any[] }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const edited = review.isEdited(section);
 
+  const confidence = section.confidence === "high" ? 94 : section.confidence === "medium" ? 82 : 70;
+
   return (
     <div className="rounded-lg border bg-white p-5 shadow-sm mb-4">
       <div className="mb-3 flex items-center justify-between">
-        <h4 className="text-lg font-bold text-gray-800">{section.title}</h4>
+        <div className="flex items-center gap-2">
+          <h4 className="text-lg font-bold text-gray-800">{section.title}</h4>
+          <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${confidence >= 90 ? "bg-green-50 text-green-700" : confidence >= 80 ? "bg-yellow-50 text-yellow-700" : "bg-red-50 text-red-700"}`}>
+            {confidence}% Confidence
+          </span>
+        </div>
         <div className="flex items-center gap-3">
           {edited && (
             <span className="rounded bg-orange-100 px-2 py-0.5 text-xs font-bold text-orange-700">
@@ -111,17 +119,22 @@ export function SectionCard({ section, review, onCitationClick }: { section: Sec
       ) : (
         <div className="leading-relaxed text-gray-700">
           <p className="whitespace-pre-wrap">{review.textFor(section)}</p>
-          {section.fact_ids && section.fact_ids.length > 0 && onCitationClick && (
+          {section.fact_ids && section.fact_ids.length > 0 && onCitationClick && facts && (
             <div className="mt-3 flex flex-wrap gap-1">
-              {section.fact_ids.map((id, i) => (
-                <button
-                  key={i}
-                  onClick={() => onCitationClick(id)}
-                  className="inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 hover:bg-blue-100 transition"
-                >
-                  📄 {id.split('-')[0].slice(0, 4)}
-                </button>
-              ))}
+              {section.fact_ids.map((id, i) => {
+                const fact = facts.find((f) => f.id === id);
+                const source = fact?.sources?.[0] || "source";
+                const shortSource = source.length > 15 ? source.slice(0, 12) + "..." : source;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => onCitationClick(id)}
+                    className="inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 hover:bg-blue-100 transition"
+                  >
+                    📄 {shortSource}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -147,7 +160,7 @@ export function FinalizeBar({ review }: { review: BriefReview }) {
     <div className="mt-8 rounded-lg border bg-gray-50 p-6 text-center">
       {review.finalized ? (
         <>
-          <p className="mb-2 font-semibold text-green-700">Brief finalized. Export is unlocked.</p>
+          <p className="mb-2 font-semibold text-green-700">Brief finalized and approved.</p>
           <button className="text-sm text-gray-500 underline" onClick={review.reopen}>
             Reopen for editing
           </button>

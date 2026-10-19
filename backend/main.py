@@ -1,6 +1,7 @@
 """FastAPI application exposing the Esko Brief AI pipeline."""
 from __future__ import annotations
 
+import json
 import logging
 import os
 import tempfile
@@ -159,7 +160,7 @@ async def pipeline(files: list[UploadFile] = File(...)) -> dict[str, object]:
         "warnings": warnings,
         # NEW: Agentic self-critique results for UI display
         "critique": generated_brief.critique,
-        "questions": questions_from_gaps(analysis.gaps)
+        "questions": questions_from_gaps(analysis.gaps, [json.dumps(f.model_dump(mode="json")) for f in facts])
     }
 
 
@@ -174,7 +175,7 @@ def regenerate_brief(req: RegenerateRequest):
     client = _get_client()
     try:
         new_brief = generate_brief(
-            facts=req.facts, 
+            facts=req.facts,
             conflicts=req.conflicts,
             gaps=[],
             source_elements=req.source_elements,
@@ -182,4 +183,9 @@ def regenerate_brief(req: RegenerateRequest):
         )
     except LLMError as exc:
         raise HTTPException(status_code=502, detail=f"LLM failure: {exc}") from exc
-    return {"brief": new_brief.model_dump(mode="json")}
+    # Re-analyze gaps after regeneration
+    analysis = analyze(req.facts)
+    return {
+        "brief": new_brief.model_dump(mode="json"),
+        "questions": questions_from_gaps(analysis.gaps, [json.dumps(f.model_dump(mode="json")) for f in req.facts])
+    }

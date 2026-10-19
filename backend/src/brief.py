@@ -100,7 +100,7 @@ Review this draft brief against the source facts.
 DRAFT:
 - Title: {raw.title}
 - Sections: {[s.title for s in raw.sections]}
-- Section content: {[s.content[:100] for s in raw.sections]}
+- Section content: {[s.content for s in raw.sections]}
 
 SOURCE FACTS:
 {format_facts_for_brief(facts)}
