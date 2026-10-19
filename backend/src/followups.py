@@ -44,7 +44,7 @@ def questions_from_gaps(gaps):
     """gaps: list of strings, or dicts whose values describe the gap."""
     out = []
     for i, gap in enumerate(gaps):
-        text = gap if isinstance(gap, str) else gap.field
+        text = gap if isinstance(gap, str) else getattr(gap, "field", str(gap))
         low = text.lower()
         question = why = None
         for keys, q, w in QUESTION_TEMPLATES:

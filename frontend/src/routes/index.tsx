@@ -11,6 +11,7 @@ import { ding, tick } from "@/lib/sound";
 import { workspaceLayout, type WorkspacePanel } from "@/components/brief/responsive";
 import { runPipeline, type PipelineResponse } from "@/lib/api";
 import type { Brief, Fact, Gap, Conflict } from "@/lib/types";
+import { useBriefReview, SectionCard, FinalizeBar } from "../components/BriefReview";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -140,6 +141,9 @@ function Index() {
   const [gaps, setGaps] = useState<Gap[]>([]);
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [elements, setElements] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [isRegenerating, setIsRegenerating] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const soundRef = useRef(sound);
   soundRef.current = sound;
@@ -203,6 +207,7 @@ function Index() {
       setGaps(data.gaps);
       setConflicts(data.conflicts);
       setElements(data.elements);
+      setQuestions(data.questions || []);
       
       setThinking(false); setActivity([]); setPhase("done"); setBtn("ready");
       setConfetti(true); setSparkle(true);
@@ -249,6 +254,34 @@ function Index() {
   };
 
   const copied = (file: string) => toast(file ? "ok" : "err", file ? "Source path copied" : "Clipboard unavailable");
+
+  const review = useBriefReview(brief?.sections || []);
+
+  const handleRegenerate = async () => {
+    setIsRegenerating(true);
+    try {
+      const newFacts = Object.entries(answers).filter(([_, ans]) => ans.trim() !== "").map(([qId, ans]) => {
+        const q = questions.find((x) => x.id === qId);
+        return { id: `user_answer_${qId}`, name: "User Provided Info", value: `${q?.question || 'Answer'} -> ${ans}`, source_type: "user", source_id: "user_input", confidence: "high" };
+      });
+      const existingFacts = facts || [];
+      const combinedFacts = [...existingFacts, ...newFacts];
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/regenerate`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ facts: combinedFacts, conflicts: conflicts || [], source_elements: elements || [] })
+      });
+      if (!res.ok) throw new Error("Regeneration failed");
+      const newData = await res.json();
+      setBrief(newData.brief);
+      setQuestions([]);
+      setAnswers({});
+    } catch (err) {
+      console.error(err);
+      alert("Failed to regenerate. Rate limit may be reached.");
+    } finally {
+      setIsRegenerating(false);
+    }
+  };
 
   const Chip = ({ c }: { c: Cite }) => (
     <span className="source-reference inline-flex max-w-full items-center rounded-md border border-border bg-card"><Button variant="plain" size="plain" onClick={() => openEvidence(c)} className={`citation-chip inline-flex min-w-0 items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] transition hover:shadow-sm ${sel?.id === c.id ? "border-primary bg-primary/5 text-foreground" : "border-border bg-card text-muted-foreground"}`}>
@@ -319,6 +352,21 @@ function Index() {
                       </div>
                     ))}
                   </div>
+                  {questions.length > 0 && (
+                    <div className="mt-6 border-t pt-4">
+                      <h3 className="font-bold text-sm mb-3 flex items-center gap-2 text-indigo-700"><span className="bg-indigo-100 p-1 rounded">🤖</span> Jessy needs your input:</h3>
+                      {questions.map((q) => (
+                        <div key={q.id} className="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                          <p className="text-sm font-semibold text-gray-800">{q.question}</p>
+                          <p className="text-xs text-gray-500 mb-2">{q.why_it_matters}</p>
+                          <input type="text" className="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Type your answer here..." value={answers[q.id] || ""} onChange={(e) => setAnswers({...answers, [q.id]: e.target.value})} />
+                        </div>
+                      ))}
+                      <button onClick={handleRegenerate} disabled={isRegenerating || Object.keys(answers).length === 0} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-semibold py-2 rounded-lg text-sm transition">
+                        {isRegenerating ? "Updating Brief..." : "Answer & Regenerate Brief"}
+                      </button>
+                    </div>
+                  )}
                 </section>
                 <section className="fade-up" style={{ animationDelay: "160ms" }}>
                   <h3 className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Conflicts <Badge n={1} /></h3>
@@ -424,33 +472,12 @@ function Index() {
                     <h1 className="fade-up mt-2 brief-title font-display text-[28px] font-normal leading-[1.15] md:text-[36px]">{brief.title}</h1>
                     <div className="mt-4 h-0.5 w-8 bg-primary" />
                     <div className="mt-4 flex gap-4 font-mono text-[10.5px] text-muted-foreground"><span><AnimatedCount value={brief.sections.length} /> sections</span><span><AnimatedCount value={facts.length} /> facts</span></div>
-                    {brief.sections.map((section, sectionIndex) => {
-                      const sectionFacts = facts.filter((f) => section.fact_ids.includes(f.id));
-                      const confidence = section.confidence === "high" ? 94 : section.confidence === "medium" ? 82 : 70;
-                      return (
-                        <section key={section.title} className="fade-up brief-section mt-7 rounded-xl border border-border bg-card p-5" style={{ animationDelay: `${60 + sectionIndex * 60}ms` }}>
-                          <div className="flex items-start justify-between gap-4">
-                            <h2 className="text-[15px] font-semibold leading-[1.15]"><span className="mr-2 font-mono text-[13px] text-primary">{sectionIndex + 1}.</span>{section.title}</h2>
-                            <Pill v={confidence} />
-                            {section.needs_human_review && (
-                              <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-medium text-warning">
-                                <AlertTriangle className="h-3 w-3" /> Needs review
-                              </span>
-                            )}
-                          </div>
-                          <p className="mt-3 text-[14px] leading-[1.65] text-secondary-foreground">{section.content}</p>
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            {sectionFacts.map((fact) => {
-                              const file = fact.sources?.[0] ?? "source";
-                              const isXlsx = file.endsWith(".xlsx") || file.endsWith(".xls");
-                              return (
-                                <Chip key={fact.id} c={{ id: fact.id, file, type: isXlsx ? "xlsx" : "pdf" as const, loc: "p.1", line: "", snippet: fact.value }} />
-                              );
-                            })}
-                          </div>
-                        </section>
-                      );
-                    })}
+                    <div className="space-y-6">
+                      {brief?.sections.map((section, idx) => (
+                        <SectionCard key={idx} section={section} review={review} />
+                      ))}
+                    </div>
+                    <FinalizeBar review={review} />
                     <div className="fade-up mt-6 grid gap-4 md:grid-cols-2" style={{ animationDelay: "180ms" }}>
                       <div className="rounded-xl border border-border bg-warning-soft p-5">
                         <h3 className="text-sm font-semibold">Uncertainty</h3>
