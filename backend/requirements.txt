@@ -7,3 +7,4 @@ pillow
 openai>=1.0.0
 pydantic
 python-dotenv
+python-multipart
