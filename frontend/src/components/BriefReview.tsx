@@ -64,7 +64,7 @@ export function useBriefReview(sections: Section[]) {
 
 export type BriefReview = ReturnType<typeof useBriefReview>;
 
-export function SectionCard({ section, review, onCitationClick, elements }: { section: Section; review: BriefReview; onCitationClick?: (id: string) => void; elements?: SourceElement[] }) {
+export function SectionCard({ section, review, onCitationClick, elements, facts }: { section: Section; review: BriefReview; onCitationClick?: (id: string) => void; elements?: SourceElement[]; facts?: Fact[] }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const edited = review.isEdited(section);
@@ -136,10 +136,14 @@ export function SectionCard({ section, review, onCitationClick, elements }: { se
       ) : (
         <div className="leading-relaxed text-gray-700">
           <p className="whitespace-pre-wrap">{review.textFor(section)}</p>
-          {section.fact_ids && section.fact_ids.length > 0 && onCitationClick && elements && (
+          {section.fact_ids && section.fact_ids.length > 0 && onCitationClick && facts && elements && (
             <div className="mt-3 flex flex-wrap gap-1">
-              {Array.from(new Set(section.fact_ids)).map((id, i) => {
-                const element = elements.find((e) => e.id === id);
+              {Array.from(new Set(section.fact_ids)).map((factId, i) => {
+                const fact = facts.find((f) => f.id === factId);
+                if (!fact || !fact.sources || fact.sources.length === 0) return null;
+
+                const elementId = fact.sources[0];
+                const element = elements.find((e) => e.id === elementId);
                 let label = "Unknown source";
                 if (element) {
                   const fileName = element.source_file.split('/').pop() || element.source_file;
@@ -158,7 +162,7 @@ export function SectionCard({ section, review, onCitationClick, elements }: { se
                 return (
                   <button
                     key={i}
-                    onClick={() => onCitationClick(id)}
+                    onClick={() => onCitationClick(elementId)}
                     className="inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 hover:bg-blue-100 transition"
                   >
                     📄 {label}

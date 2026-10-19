@@ -146,6 +146,7 @@ function Index() {
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [regenerateError, setRegenerateError] = useState<string | null>(null);
   const [pipelineData, setPipelineData] = useState<any>(null);
+  const [briefFacts, setBriefFacts] = useState<any[]>([]);
   const fileInput = useRef<HTMLInputElement>(null);
   const soundRef = useRef(sound);
   soundRef.current = sound;
@@ -211,6 +212,7 @@ function Index() {
       setElements(data.elements);
       setQuestions(data.questions || []);
       setPipelineData(data);
+      setBriefFacts(data.brief_facts || data.facts || []);
       
       setThinking(false); setActivity([]); setPhase("done"); setBtn("ready");
       setConfetti(true); setSparkle(true);
@@ -332,6 +334,7 @@ function Index() {
       setBrief(newData.brief);
       setQuestions(newData.questions || []);
       setAnswers({});
+      setBriefFacts(newData.brief_facts || facts || []);
     } catch (err) {
       console.error(err);
       setRegenerateError("AI quota reached. Your answer is saved; please try again later.");
@@ -552,7 +555,7 @@ function Index() {
                     <div className="mt-4 flex gap-4 font-mono text-[10.5px] text-muted-foreground"><span><AnimatedCount value={brief.sections.length} /> sections</span><span><AnimatedCount value={facts.length} /> facts</span></div>
                     <div className="space-y-6">
                       {brief?.sections.map((section, idx) => (
-                        <SectionCard key={idx} section={section} review={review} onCitationClick={handleCitationClick} elements={elements} />
+                        <SectionCard key={idx} section={section} review={review} onCitationClick={handleCitationClick} elements={elements} facts={briefFacts} />
                       ))}
                     </div>
                     <FinalizeBar review={review} sections={brief?.sections || []} onDownloadMarkdown={handleDownloadMarkdown} />

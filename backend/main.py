@@ -160,7 +160,9 @@ async def pipeline(files: list[UploadFile] = File(...)) -> dict[str, object]:
         "warnings": warnings,
         # NEW: Agentic self-critique results for UI display
         "critique": generated_brief.critique,
-        "questions": questions_from_gaps(analysis.gaps, [json.dumps(f.model_dump(mode="json")) for f in facts])
+        "questions": questions_from_gaps(analysis.gaps, [json.dumps(f.model_dump(mode="json")) for f in facts]),
+        # Include facts in brief for citation lookup
+        "brief_facts": [fact.model_dump() for fact in facts]
     }
 
 
@@ -187,5 +189,6 @@ def regenerate_brief(req: RegenerateRequest):
     analysis = analyze(req.facts)
     return {
         "brief": new_brief.model_dump(mode="json"),
-        "questions": questions_from_gaps(analysis.gaps, [json.dumps(f.model_dump(mode="json")) for f in req.facts])
+        "questions": questions_from_gaps(analysis.gaps, [json.dumps(f.model_dump(mode="json")) for f in req.facts]),
+        "brief_facts": [f.model_dump() for f in req.facts]
     }
