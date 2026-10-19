@@ -14,6 +14,15 @@ export type SourceElement = {
   page?: number;
   row?: number;
   sheet?: string;
+  content: string;
+  source_type?: "pdf" | "xlsx" | "docx";
+};
+
+export type Fact = {
+  id: string;
+  name: string;
+  value: string;
+  sources: string[];
 };
 
 export function useBriefReview(sections: Section[]) {
@@ -55,7 +64,7 @@ export function useBriefReview(sections: Section[]) {
 
 export type BriefReview = ReturnType<typeof useBriefReview>;
 
-export function SectionCard({ section, review, onCitationClick, facts, elements }: { section: Section; review: BriefReview; onCitationClick?: (id: string) => void; facts?: any[]; elements?: SourceElement[] }) {
+export function SectionCard({ section, review, onCitationClick, elements }: { section: Section; review: BriefReview; onCitationClick?: (id: string) => void; elements?: SourceElement[] }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const edited = review.isEdited(section);
@@ -134,7 +143,11 @@ export function SectionCard({ section, review, onCitationClick, facts, elements 
                 let label = "Unknown source";
                 if (element) {
                   const fileName = element.source_file.split('/').pop() || element.source_file;
-                  if (element.page !== undefined && element.page !== null) {
+                  if (element.source_type === "pdf" && element.page !== undefined && element.page !== null) {
+                    label = `${fileName} (page ${element.page})`;
+                  } else if (element.source_type === "xlsx" && element.sheet && element.row !== undefined && element.row !== null) {
+                    label = `${fileName} (${element.sheet}, row ${element.row})`;
+                  } else if (element.page !== undefined && element.page !== null) {
                     label = `${fileName} p.${element.page}`;
                   } else if (element.row !== undefined && element.row !== null) {
                     label = `${fileName} row ${element.row}`;
