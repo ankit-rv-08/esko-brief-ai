@@ -4,6 +4,7 @@ export type Section = {
   title: string;
   content: string;
   needs_human_review?: boolean;
+  fact_ids?: string[];
 };
 
 export function useBriefReview(sections: Section[]) {
@@ -45,7 +46,7 @@ export function useBriefReview(sections: Section[]) {
 
 export type BriefReview = ReturnType<typeof useBriefReview>;
 
-export function SectionCard({ section, review }: { section: Section; review: BriefReview }) {
+export function SectionCard({ section, review, onCitationClick }: { section: Section; review: BriefReview; onCitationClick?: (id: string) => void }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const edited = review.isEdited(section);
@@ -108,7 +109,22 @@ export function SectionCard({ section, review }: { section: Section; review: Bri
           </div>
         </>
       ) : (
-        <p className="whitespace-pre-wrap leading-relaxed text-gray-700">{review.textFor(section)}</p>
+        <div className="leading-relaxed text-gray-700">
+          <p className="whitespace-pre-wrap">{review.textFor(section)}</p>
+          {section.fact_ids && section.fact_ids.length > 0 && onCitationClick && (
+            <div className="mt-3 flex flex-wrap gap-1">
+              {section.fact_ids.map((id, i) => (
+                <button
+                  key={i}
+                  onClick={() => onCitationClick(id)}
+                  className="inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 hover:bg-blue-100 transition"
+                >
+                  📄 {id.split('-')[0].slice(0, 4)}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
       {section.needs_human_review &&

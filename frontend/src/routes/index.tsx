@@ -257,6 +257,22 @@ function Index() {
 
   const review = useBriefReview(brief?.sections || []);
 
+  const handleCitationClick = (factId: string) => {
+    const fact = facts.find((f) => f.id === factId);
+    if (fact && fact.sources?.[0]) {
+      const file = fact.sources[0];
+      const isXlsx = file.endsWith(".xlsx") || file.endsWith(".xls");
+      openEvidence({
+        id: factId,
+        file,
+        type: isXlsx ? "xlsx" : "pdf",
+        loc: "p.1",
+        line: "",
+        snippet: fact.value
+      });
+    }
+  };
+
   const handleRegenerate = async () => {
     setIsRegenerating(true);
     try {
@@ -474,7 +490,7 @@ function Index() {
                     <div className="mt-4 flex gap-4 font-mono text-[10.5px] text-muted-foreground"><span><AnimatedCount value={brief.sections.length} /> sections</span><span><AnimatedCount value={facts.length} /> facts</span></div>
                     <div className="space-y-6">
                       {brief?.sections.map((section, idx) => (
-                        <SectionCard key={idx} section={section} review={review} />
+                        <SectionCard key={idx} section={section} review={review} onCitationClick={handleCitationClick} />
                       ))}
                     </div>
                     <FinalizeBar review={review} />
