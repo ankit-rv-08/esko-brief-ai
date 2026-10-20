@@ -61,4 +61,4 @@ npm run dev
 
 - The live demo runs on a rate-limited free API tier (~20 requests/day).
 - The "Use sample sources" button uses local LLM response caching for a fast, reliable experience.
-- Uploading custom files runs the live pipeline and may hit rate limits.
+- Uploading custom files runs the live pipeline and may hit rate limits
