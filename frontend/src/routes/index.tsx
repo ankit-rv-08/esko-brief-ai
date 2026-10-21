@@ -200,7 +200,10 @@ function Index() {
           analyzing: "Checking for conflicts...",
           generating: "Drafting 6 sections..."
         }[stage];
-        setActivity((a) => [...a, stageText]);
+        setActivity((a) => {
+          if (a.includes(stageText)) return a;
+          return [...a, stageText];
+        });
         setThinkingText(stageText);
       });
 
@@ -228,7 +231,7 @@ function Index() {
       const isNetwork = errMsg.toLowerCase().includes("failed to fetch")
         || errMsg.toLowerCase().includes("cors")
         || errMsg.toLowerCase().includes("network");
-      setThinking(false); setPhase("done"); setBtn("default"); setBrief(null);
+      setThinking(false); setActivity([]); setPhase("done"); setBtn("default"); setBrief(null);
       say(`Hit a snag — ${isNetwork ? "network/CORS error" : errMsg}`);
       toast("err", isNetwork ? "Network/CORS: check backend URL" : "Failed: " + errMsg);
     } finally {

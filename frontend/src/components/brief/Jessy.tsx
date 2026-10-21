@@ -131,7 +131,7 @@ export function Jessy({
           <div className="rounded-lg border border-dashed border-border bg-muted/60 p-3">
             <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Activity</div>
             <ul className="mt-1.5 space-y-1">
-              {activity.map((a, i) => <li key={`${i}-${a}`} className="slide-in flex items-center gap-2 text-[12px] text-foreground/80"><span className="h-1 w-1 rounded-full bg-primary" />{a}</li>)}
+              {activity.map((a, i) => <li key={`activity-${i}`} className="slide-in flex items-center gap-2 text-[12px] text-foreground/80"><span className="h-1 w-1 rounded-full bg-primary" />{a}</li>)}
             </ul>
           </div>
         )}
