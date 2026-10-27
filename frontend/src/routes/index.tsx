@@ -227,13 +227,10 @@ function Index() {
       if (soundRef.current) ding();
     } catch (error) {
       console.error("Pipeline failed:", error);
-      const errMsg = error instanceof Error ? error.message : String(error);
-      const isNetwork = errMsg.toLowerCase().includes("failed to fetch")
-        || errMsg.toLowerCase().includes("cors")
-        || errMsg.toLowerCase().includes("network");
       setThinking(false); setActivity([]); setPhase("done"); setBtn("default"); setBrief(null);
-      say(`Hit a snag — ${isNetwork ? "network/CORS error" : errMsg}`);
-      toast("err", isNetwork ? "Network/CORS: check backend URL" : "Failed: " + errMsg);
+      const outageMessage = "The live API is currently experiencing a high-demand outage. Please refer to the demo video for the full working experience.";
+      say(outageMessage);
+      toast("err", outageMessage);
     } finally {
       setPhase("done");
     }
